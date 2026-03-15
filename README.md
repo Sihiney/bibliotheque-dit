@@ -2,13 +2,13 @@
 
 Plateforme de gestion de bibliothèque académique basée sur une architecture microservices.
 
-Projet DevOps — Master 1 Intelligence Artificielle — Dakar Institute of Technology
+Projet DevOps - Master 1 Intelligence Artificielle — Dakar Institute of Technology
 
 **Groupe 2 :**
-AHOGA Josias
-BAH Mamoudou
-BAMBA Yannick
-DIOP Seynabou
+- AHOGA Josias
+- BAH Mamoudou
+- BAMBA Yannick
+- DIOP Seynabou
 
 ---
 
