@@ -1,12 +1,18 @@
-# 📚 Bibliothèque Numérique — DIT
+# Bibliothèque Numérique - DIT
 
 Plateforme de gestion de bibliothèque académique basée sur une architecture microservices.
 
-Projet DevOps — Master 1 Intelligence Artificielle — Dakar Institute of Technology
+Projet DevOps - Master 1 Intelligence Artificielle — Dakar Institute of Technology
+
+**Groupe 2 :**
+- AHOGA Josias
+- BAH Mamoudou
+- BAMBA Yannick
+- DIOP Seynabou
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ├── service-livres/         → API Livres        (port 8001)
@@ -21,7 +27,7 @@ Projet DevOps — Master 1 Intelligence Artificielle — Dakar Institute of Tech
 
 ---
 
-## 🚀 Lancement avec Docker Compose
+## Lancement avec Docker Compose
 
 ### Prérequis
 - Docker Desktop installé et démarré
@@ -52,7 +58,7 @@ docker compose down
 
 ---
 
-## 🔌 Documentation des APIs
+## Documentation des APIs
 
 FastAPI génère automatiquement une documentation interactive.
 
@@ -64,7 +70,7 @@ FastAPI génère automatiquement une documentation interactive.
 
 ---
 
-## ⚙️ Pipeline Jenkins
+## Pipeline Jenkins
 
 ### Prérequis Jenkins
 - Jenkins installé avec les plugins : Git, Docker Pipeline
@@ -89,7 +95,7 @@ FastAPI génère automatiquement une documentation interactive.
 
 ---
 
-## 📋 Microservices
+## Microservices
 
 ### Service Livres (port 8001)
 | Méthode | Endpoint | Action |
