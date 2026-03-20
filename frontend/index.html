@@ -589,7 +589,7 @@
       <input type="number" id="e-livre" placeholder="ex : 5">
     </div>
     <div class="form-group">
-      <label>Date de retour prevue (optionnel — defaut : +14 jours)</label>
+      <label>Date de retour prevue</label>
       <input type="date" id="e-retour">
     </div>
     <div class="modal-actions">
@@ -966,6 +966,10 @@
 
   // Chargement initial
   chargerLivres();
+
+  // Empêcher la selection d'une date de retour anterieure a aujourd'hui
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('e-retour').setAttribute('min', today);
 </script>
 </body>
 </html>
