@@ -826,6 +826,20 @@
     } catch(e) { toast(e.message, 'error'); }
   }
 
+  // Recupere noms/titres pour une liste d'emprunts
+  async function enrichirEmprunts(liste) {
+    const userIds  = [...new Set(liste.map(e => e.utilisateur_id))];
+    const livreIds = [...new Set(liste.map(e => e.livre_id))];
+    const [users, livres] = await Promise.all([
+      Promise.all(userIds.map(id  => api('utilisateurs', `/utilisateurs/${id}`).catch(() => null))),
+      Promise.all(livreIds.map(id => api('livres', `/livres/${id}`).catch(() => null))),
+    ]);
+    const userMap = {}, livreMap = {};
+    userIds.forEach((id, i)  => { if (users[i])  userMap[id]  = `${users[i].prenom} ${users[i].nom}`; });
+    livreIds.forEach((id, i) => { if (livres[i]) livreMap[id] = livres[i].titre; });
+    return { userMap, livreMap };
+  }
+
   // EMPRUNTS
   async function chargerEmprunts(filtre = 'en-cours') {
     try {
@@ -838,18 +852,22 @@
         return;
       }
 
+      const { userMap, livreMap } = await enrichirEmprunts(liste);
+
       document.getElementById('table-emprunts').innerHTML = `
         <table>
           <thead>
             <tr>
-              <th>#</th><th>Utilisateur</th><th>Livre</th>
+              <th>#</th><th>Membre</th><th>Livre</th>
               <th>Emprunte le</th><th>Retour prevu</th><th>Retour reel</th>
               <th>Statut</th><th>Actions</th>
             </tr>
           </thead>
           <tbody>
             ${liste.map(e => {
-              const rendu = !!e.date_retour_reelle;
+              const rendu  = !!e.date_retour_reelle;
+              const membre = userMap[e.utilisateur_id]  || `Membre #${e.utilisateur_id}`;
+              const titre  = livreMap[e.livre_id]       || `Livre #${e.livre_id}`;
               const statut = rendu
                 ? (e.retard ? `<span class="badge badge-amber">Rendu en retard</span>`
                             : `<span class="badge badge-green">Rendu a temps</span>`)
@@ -857,8 +875,8 @@
               return `
                 <tr>
                   <td>${e.id}</td>
-                  <td>Membre #${e.utilisateur_id}</td>
-                  <td>Livre #${e.livre_id}</td>
+                  <td><strong>${membre}</strong></td>
+                  <td>${titre}</td>
                   <td>${e.date_emprunt}</td>
                   <td>${e.date_retour_prevue}</td>
                   <td>${e.date_retour_reelle || '<span style="color:var(--muted)">—</span>'}</td>
@@ -909,11 +927,14 @@
           `<div class="empty">${iconCheck}<p>Aucun retard en ce moment</p></div>`;
         return;
       }
+
+      const { userMap, livreMap } = await enrichirEmprunts(liste);
+
       document.getElementById('table-retards').innerHTML = `
         <table>
           <thead>
             <tr>
-              <th>#</th><th>Utilisateur</th><th>Livre</th>
+              <th>#</th><th>Membre</th><th>Livre</th>
               <th>Date emprunt</th><th>Date prevue</th><th>Jours de retard</th><th>Actions</th>
             </tr>
           </thead>
@@ -922,11 +943,13 @@
               const aujourd_hui = new Date();
               const prevue      = new Date(e.date_retour_prevue);
               const jours       = Math.max(0, Math.floor((aujourd_hui - prevue) / 86400000));
+              const membre = userMap[e.utilisateur_id] || `Membre #${e.utilisateur_id}`;
+              const titre  = livreMap[e.livre_id]      || `Livre #${e.livre_id}`;
               return `
                 <tr>
                   <td>${e.id}</td>
-                  <td>Membre #${e.utilisateur_id}</td>
-                  <td>Livre #${e.livre_id}</td>
+                  <td><strong>${membre}</strong></td>
+                  <td>${titre}</td>
                   <td>${e.date_emprunt}</td>
                   <td>${e.date_retour_prevue}</td>
                   <td><span class="badge badge-red">+${jours} jour(s)</span></td>
