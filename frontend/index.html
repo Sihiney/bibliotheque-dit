@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Bibliothèque Numérique — DIT</title>
+  <title>Bibliotheque Numerique — DIT</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -23,13 +23,14 @@
 
     body {
       font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
       background: var(--light);
       color: var(--navy);
       display: flex;
       min-height: 100vh;
     }
 
-    /* ── SIDEBAR ─────────────────────────────── */
+    /* SIDEBAR */
     aside {
       width: 240px;
       min-height: 100vh;
@@ -52,7 +53,11 @@
       line-height: 1.3;
     }
     .brand span {
+      display: block;
+      margin-top: 6px;
+      font-family: 'DM Sans', sans-serif;
       font-size: 11px;
+      font-weight: 500;
       color: var(--amber);
       letter-spacing: 1.5px;
       text-transform: uppercase;
@@ -62,10 +67,10 @@
     nav a {
       display: flex;
       align-items: center;
-      gap: 12px;
       padding: 12px 24px;
       color: rgba(255,255,255,0.6);
       text-decoration: none;
+      font-family: 'DM Sans', sans-serif;
       font-size: 14px;
       font-weight: 500;
       cursor: pointer;
@@ -78,16 +83,17 @@
       background: rgba(255,255,255,0.08);
       border-left-color: var(--amber);
     }
-    nav a .icon { font-size: 18px; width: 22px; text-align: center; }
 
     .sidebar-footer {
       padding: 16px 24px 0;
       border-top: 1px solid rgba(255,255,255,0.1);
-      font-size: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
       color: rgba(255,255,255,0.3);
+      line-height: 1.6;
     }
 
-    /* ── MAIN ────────────────────────────────── */
+    /* MAIN */
     main {
       margin-left: 240px;
       flex: 1;
@@ -98,7 +104,7 @@
     .page { display: none; }
     .page.active { display: block; }
 
-    /* ── PAGE HEADER ─────────────────────────── */
+    /* PAGE HEADER */
     .page-header {
       display: flex;
       align-items: center;
@@ -108,11 +114,17 @@
     .page-header h2 {
       font-family: 'DM Serif Display', serif;
       font-size: 28px;
+      font-weight: 400;
       color: var(--navy);
     }
-    .page-header p { color: var(--muted); font-size: 14px; margin-top: 4px; }
+    .page-header p {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
 
-    /* ── STATS ROW ───────────────────────────── */
+    /* STATS */
     .stats {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -125,11 +137,23 @@
       padding: 20px 24px;
       border: 1px solid var(--border);
     }
-    .stat-card .label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-    .stat-card .value { font-size: 32px; font-weight: 600; color: var(--navy); margin-top: 6px; }
-    .stat-card .sub   { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .stat-card .label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .stat-card .value {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-top: 6px;
+    }
 
-    /* ── TABLE ───────────────────────────────── */
+    /* CARD */
     .card {
       background: var(--white);
       border-radius: 12px;
@@ -144,7 +168,12 @@
       justify-content: space-between;
       gap: 12px;
     }
-    .card-header h3 { font-size: 15px; font-weight: 600; }
+    .card-header h3 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--navy);
+    }
 
     .search-bar {
       display: flex;
@@ -166,12 +195,15 @@
       width: 100%;
       color: var(--navy);
     }
+    .search-bar input::placeholder { color: var(--muted); }
 
+    /* TABLE */
     table { width: 100%; border-collapse: collapse; }
     thead tr { background: var(--light); }
     thead th {
       text-align: left;
       padding: 12px 20px;
+      font-family: 'DM Sans', sans-serif;
       font-size: 11px;
       font-weight: 600;
       letter-spacing: 0.8px;
@@ -180,23 +212,30 @@
     }
     tbody tr { border-top: 1px solid var(--border); transition: background 0.15s; }
     tbody tr:hover { background: #FAFAF8; }
-    tbody td { padding: 14px 20px; font-size: 14px; }
+    tbody td {
+      padding: 14px 20px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--navy);
+    }
+    tbody td strong { font-weight: 600; }
 
-    /* ── BADGE ───────────────────────────────── */
+    /* BADGE */
     .badge {
       display: inline-block;
       padding: 3px 10px;
       border-radius: 20px;
+      font-family: 'DM Sans', sans-serif;
       font-size: 11px;
       font-weight: 600;
     }
-    .badge-green  { background: #E6F7EE; color: #1A7F4B; }
-    .badge-red    { background: #FDECEA; color: #C0392B; }
-    .badge-amber  { background: #FEF3E2; color: #B86C0A; }
-    .badge-teal   { background: #E3F4F5; color: #1A6B72; }
-    .badge-navy   { background: #E5EAEF; color: #0D2B45; }
+    .badge-green { background: #E6F7EE; color: #1A7F4B; }
+    .badge-red   { background: #FDECEA; color: #C0392B; }
+    .badge-amber { background: #FEF3E2; color: #B86C0A; }
+    .badge-teal  { background: #E3F4F5; color: #1A6B72; }
+    .badge-navy  { background: #E5EAEF; color: #0D2B45; }
 
-    /* ── BUTTONS ─────────────────────────────── */
+    /* BUTTONS */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -210,18 +249,19 @@
       border: none;
       transition: all 0.2s;
     }
-    .btn-primary { background: var(--teal); color: white; }
+    .btn-primary       { background: var(--teal);   color: white; }
     .btn-primary:hover { background: #155960; }
-    .btn-amber   { background: var(--amber); color: white; }
-    .btn-amber:hover { background: #c97409; }
-    .btn-ghost   { background: transparent; color: var(--muted); border: 1px solid var(--border); }
-    .btn-ghost:hover { background: var(--light); }
-    .btn-danger  { background: var(--danger); color: white; }
-    .btn-sm { padding: 5px 12px; font-size: 12px; }
+    .btn-amber         { background: var(--amber);  color: white; }
+    .btn-amber:hover   { background: #c97409; }
+    .btn-danger        { background: var(--danger); color: white; }
+    .btn-danger:hover  { background: #a93226; }
+    .btn-ghost         { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+    .btn-ghost:hover   { background: var(--light); color: var(--navy); }
+    .btn-sm            { padding: 5px 12px; font-size: 12px; }
 
     .actions { display: flex; gap: 6px; }
 
-    /* ── MODAL ───────────────────────────────── */
+    /* MODAL */
     .overlay {
       display: none;
       position: fixed; inset: 0;
@@ -243,11 +283,22 @@
     .modal h3 {
       font-family: 'DM Serif Display', serif;
       font-size: 22px;
+      font-weight: 400;
+      color: var(--navy);
       margin-bottom: 20px;
     }
 
     .form-group { margin-bottom: 16px; }
-    .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .form-group label {
+      display: block;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
     .form-group input,
     .form-group select {
       width: 100%;
@@ -267,7 +318,7 @@
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
 
-    /* ── TOAST ───────────────────────────────── */
+    /* TOAST */
     #toast {
       position: fixed;
       bottom: 28px; right: 28px;
@@ -275,6 +326,7 @@
       color: white;
       padding: 14px 20px;
       border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
       font-size: 14px;
       font-weight: 500;
       opacity: 0;
@@ -282,72 +334,76 @@
       z-index: 999;
       max-width: 320px;
     }
-    #toast.show { opacity: 1; }
-    #toast.error { background: var(--danger); }
+    #toast.show    { opacity: 1; }
+    #toast.error   { background: var(--danger); }
     #toast.success { background: var(--success); }
 
-    /* ── EMPTY STATE ─────────────────────────── */
+    /* EMPTY STATE */
     .empty {
       text-align: center;
       padding: 60px 20px;
       color: var(--muted);
     }
-    .empty .icon { font-size: 40px; margin-bottom: 12px; }
-    .empty p { font-size: 15px; }
+    .empty .empty-icon {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 12px;
+      opacity: 0.4;
+    }
+    .empty p {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: var(--muted);
+    }
 
-    /* ── LOADING ─────────────────────────────── */
+    /* LOADER */
     .loader {
       text-align: center;
       padding: 40px;
+      font-family: 'DM Sans', sans-serif;
       color: var(--muted);
       font-size: 14px;
+    }
+
+    /* MONO */
+    .mono {
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
     }
   </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════
-     SIDEBAR
-══════════════════════════════════════════ -->
+<!-- SIDEBAR -->
 <aside>
   <div class="brand">
-    <h1>Bibliothèque<br>Numérique</h1>
+    <h1>Bibliotheque<br>Numerique</h1>
     <span>Dakar Institute of Technology</span>
   </div>
   <nav>
-    <a class="active" onclick="showPage('livres')" id="nav-livres">
-      <span class="icon">📚</span> Livres
-    </a>
-    <a onclick="showPage('utilisateurs')" id="nav-utilisateurs">
-      <span class="icon">👥</span> Utilisateurs
-    </a>
-    <a onclick="showPage('emprunts')" id="nav-emprunts">
-      <span class="icon">🔄</span> Emprunts
-    </a>
-    <a onclick="showPage('retards')" id="nav-retards">
-      <span class="icon">⚠️</span> Retards
-    </a>
+    <a class="active" onclick="showPage('livres')"        id="nav-livres">Livres</a>
+    <a onclick="showPage('utilisateurs')"                 id="nav-utilisateurs">Utilisateurs</a>
+    <a onclick="showPage('emprunts')"                     id="nav-emprunts">Emprunts</a>
+    <a onclick="showPage('retards')"                      id="nav-retards">Retards</a>
   </nav>
   <div class="sidebar-footer">
     Projet DevOps — Master 1 IA<br>DIT 2026
   </div>
 </aside>
 
-<!-- ══════════════════════════════════════════
-     MAIN CONTENT
-══════════════════════════════════════════ -->
+<!-- MAIN -->
 <main>
 
-  <!-- ── PAGE LIVRES ─────────────────────── -->
+  <!-- PAGE LIVRES -->
   <section class="page active" id="page-livres">
     <div class="page-header">
       <div>
         <h2>Livres</h2>
-        <p>Gestion du catalogue de la bibliothèque</p>
+        <p>Gestion du catalogue de la bibliotheque</p>
       </div>
       <button class="btn btn-primary" onclick="openModal('modal-livre')">+ Ajouter un livre</button>
     </div>
-    <div class="stats" id="stats-livres">
+    <div class="stats">
       <div class="stat-card">
         <div class="label">Total livres</div>
         <div class="value" id="stat-total">—</div>
@@ -357,7 +413,7 @@
         <div class="value" id="stat-dispo">—</div>
       </div>
       <div class="stat-card">
-        <div class="label">Empruntés</div>
+        <div class="label">Empruntes</div>
         <div class="value" id="stat-empruntes">—</div>
       </div>
     </div>
@@ -365,20 +421,19 @@
       <div class="card-header">
         <h3>Catalogue</h3>
         <div class="search-bar">
-          <span>🔍</span>
-          <input type="text" id="search-livres" placeholder="Titre, auteur, ISBN…" oninput="filtrerLivres(this.value)">
+          <input type="text" id="search-livres" placeholder="Rechercher par titre, auteur, ISBN..." oninput="filtrerLivres(this.value)">
         </div>
       </div>
-      <div id="table-livres"><div class="loader">Chargement…</div></div>
+      <div id="table-livres"><div class="loader">Chargement...</div></div>
     </div>
   </section>
 
-  <!-- ── PAGE UTILISATEURS ───────────────── -->
+  <!-- PAGE UTILISATEURS -->
   <section class="page" id="page-utilisateurs">
     <div class="page-header">
       <div>
         <h2>Utilisateurs</h2>
-        <p>Membres inscrits à la bibliothèque</p>
+        <p>Membres inscrits a la bibliotheque</p>
       </div>
       <button class="btn btn-primary" onclick="openModal('modal-utilisateur')">+ Ajouter un membre</button>
     </div>
@@ -388,7 +443,7 @@
         <div class="value" id="stat-u-total">—</div>
       </div>
       <div class="stat-card">
-        <div class="label">Étudiants</div>
+        <div class="label">Etudiants</div>
         <div class="value" id="stat-u-etudiant">—</div>
       </div>
       <div class="stat-card">
@@ -400,16 +455,16 @@
       <div class="card-header">
         <h3>Liste des membres</h3>
       </div>
-      <div id="table-utilisateurs"><div class="loader">Chargement…</div></div>
+      <div id="table-utilisateurs"><div class="loader">Chargement...</div></div>
     </div>
   </section>
 
-  <!-- ── PAGE EMPRUNTS ───────────────────── -->
+  <!-- PAGE EMPRUNTS -->
   <section class="page" id="page-emprunts">
     <div class="page-header">
       <div>
         <h2>Emprunts</h2>
-        <p>Gestion des prêts et retours</p>
+        <p>Gestion des prets et retours</p>
       </div>
       <button class="btn btn-primary" onclick="openModal('modal-emprunt')">+ Nouvel emprunt</button>
     </div>
@@ -421,59 +476,55 @@
           <button class="btn btn-ghost btn-sm" onclick="chargerEmprunts('tous')">Tous</button>
         </div>
       </div>
-      <div id="table-emprunts"><div class="loader">Chargement…</div></div>
+      <div id="table-emprunts"><div class="loader">Chargement...</div></div>
     </div>
   </section>
 
-  <!-- ── PAGE RETARDS ────────────────────── -->
+  <!-- PAGE RETARDS -->
   <section class="page" id="page-retards">
     <div class="page-header">
       <div>
         <h2>Retards</h2>
-        <p>Livres non retournés après la date prévue</p>
+        <p>Livres non retournes apres la date prevue</p>
       </div>
     </div>
     <div class="card">
       <div class="card-header">
         <h3>Emprunts en retard</h3>
       </div>
-      <div id="table-retards"><div class="loader">Chargement…</div></div>
+      <div id="table-retards"><div class="loader">Chargement...</div></div>
     </div>
   </section>
 
 </main>
 
-<!-- ══════════════════════════════════════════
-     MODALS
-══════════════════════════════════════════ -->
-
-<!-- Modal : Ajouter un livre -->
+<!-- MODAL : Ajouter un livre -->
 <div class="overlay" id="modal-livre">
   <div class="modal">
     <h3>Ajouter un livre</h3>
     <div class="form-row">
       <div class="form-group">
         <label>Titre *</label>
-        <input type="text" id="l-titre" placeholder="ex: Les Misérables">
+        <input type="text" id="l-titre" placeholder="ex : Les Miserables">
       </div>
       <div class="form-group">
         <label>Auteur *</label>
-        <input type="text" id="l-auteur" placeholder="ex: Victor Hugo">
+        <input type="text" id="l-auteur" placeholder="ex : Victor Hugo">
       </div>
     </div>
     <div class="form-row">
       <div class="form-group">
         <label>ISBN *</label>
-        <input type="text" id="l-isbn" placeholder="ex: 978-2-07-036024-4">
+        <input type="text" id="l-isbn" placeholder="ex : 978-2-07-036024-4">
       </div>
       <div class="form-group">
-        <label>Année</label>
-        <input type="number" id="l-annee" placeholder="ex: 2020">
+        <label>Annee</label>
+        <input type="number" id="l-annee" placeholder="ex : 2020">
       </div>
     </div>
     <div class="form-group">
       <label>Genre</label>
-      <input type="text" id="l-genre" placeholder="ex: Roman, Informatique…">
+      <input type="text" id="l-genre" placeholder="ex : Roman, Informatique...">
     </div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('modal-livre')">Annuler</button>
@@ -482,38 +533,38 @@
   </div>
 </div>
 
-<!-- Modal : Ajouter un utilisateur -->
+<!-- MODAL : Ajouter un utilisateur -->
 <div class="overlay" id="modal-utilisateur">
   <div class="modal">
     <h3>Inscrire un membre</h3>
     <div class="form-row">
       <div class="form-group">
         <label>Nom *</label>
-        <input type="text" id="u-nom" placeholder="ex: Diallo">
+        <input type="text" id="u-nom" placeholder="ex : Diallo">
       </div>
       <div class="form-group">
-        <label>Prénom *</label>
-        <input type="text" id="u-prenom" placeholder="ex: Amadou">
+        <label>Prenom *</label>
+        <input type="text" id="u-prenom" placeholder="ex : Amadou">
       </div>
     </div>
     <div class="form-group">
       <label>Email *</label>
-      <input type="email" id="u-email" placeholder="ex: amadou@dit.sn">
+      <input type="email" id="u-email" placeholder="ex : amadou@dit.sn">
     </div>
     <div class="form-row">
       <div class="form-group">
-        <label>Téléphone</label>
-        <input type="text" id="u-telephone" placeholder="ex: +221 77 000 00 00">
+        <label>Telephone</label>
+        <input type="text" id="u-telephone" placeholder="ex : +221 77 000 00 00">
       </div>
       <div class="form-group">
         <label>Matricule *</label>
-        <input type="text" id="u-matricule" placeholder="ex: ETU-2024-001">
+        <input type="text" id="u-matricule" placeholder="ex : ETU-2024-001">
       </div>
     </div>
     <div class="form-group">
       <label>Type de membre *</label>
       <select id="u-type">
-        <option value="etudiant">Étudiant</option>
+        <option value="etudiant">Etudiant</option>
         <option value="professeur">Professeur</option>
         <option value="personnel_administratif">Personnel administratif</option>
       </select>
@@ -525,20 +576,20 @@
   </div>
 </div>
 
-<!-- Modal : Nouvel emprunt -->
+<!-- MODAL : Nouvel emprunt -->
 <div class="overlay" id="modal-emprunt">
   <div class="modal">
     <h3>Enregistrer un emprunt</h3>
     <div class="form-group">
       <label>ID Utilisateur *</label>
-      <input type="number" id="e-utilisateur" placeholder="ex: 1">
+      <input type="number" id="e-utilisateur" placeholder="ex : 1">
     </div>
     <div class="form-group">
       <label>ID Livre *</label>
-      <input type="number" id="e-livre" placeholder="ex: 5">
+      <input type="number" id="e-livre" placeholder="ex : 5">
     </div>
     <div class="form-group">
-      <label>Date de retour prévue (optionnel — défaut : +14 jours)</label>
+      <label>Date de retour prevue (optionnel — defaut : +14 jours)</label>
       <input type="date" id="e-retour">
     </div>
     <div class="modal-actions">
@@ -548,37 +599,31 @@
   </div>
 </div>
 
-<!-- Toast notification -->
+<!-- Toast -->
 <div id="toast"></div>
 
-<!-- ══════════════════════════════════════════
-     JAVASCRIPT
-══════════════════════════════════════════ -->
 <script>
-  // ── CONFIG : URLs des microservices ─────────
   const API = {
-    livres:        'http://localhost:8001',
-    utilisateurs:  'http://localhost:8002',
-    emprunts:      'http://localhost:8003',
+    livres:       'http://localhost:8001',
+    utilisateurs: 'http://localhost:8002',
+    emprunts:     'http://localhost:8003',
   };
 
-  // Données en mémoire pour la recherche locale
   let tousLesLivres = [];
 
-  // ── NAVIGATION ───────────────────────────────
+  // NAVIGATION
   function showPage(page) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
     document.getElementById('page-' + page).classList.add('active');
     document.getElementById('nav-' + page).classList.add('active');
-
-    if (page === 'livres')        chargerLivres();
-    if (page === 'utilisateurs')  chargerUtilisateurs();
-    if (page === 'emprunts')      chargerEmprunts('en-cours');
-    if (page === 'retards')       chargerRetards();
+    if (page === 'livres')       chargerLivres();
+    if (page === 'utilisateurs') chargerUtilisateurs();
+    if (page === 'emprunts')     chargerEmprunts('en-cours');
+    if (page === 'retards')      chargerRetards();
   }
 
-  // ── TOAST ────────────────────────────────────
+  // TOAST
   function toast(msg, type = 'success') {
     const el = document.getElementById('toast');
     el.textContent = msg;
@@ -586,11 +631,11 @@
     setTimeout(() => el.className = '', 3000);
   }
 
-  // ── MODALS ───────────────────────────────────
+  // MODALS
   function openModal(id)  { document.getElementById(id).classList.add('open'); }
   function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
-  // ── API HELPER ───────────────────────────────
+  // API HELPER
   async function api(service, path, method = 'GET', body = null) {
     const opts = { method, headers: { 'Content-Type': 'application/json' } };
     if (body) opts.body = JSON.stringify(body);
@@ -603,10 +648,15 @@
     return res.json();
   }
 
-  // ════════════════════════════════════════════
-  // LIVRES
-  // ════════════════════════════════════════════
+  // SVG icones simples pour les etats vides
+  const iconBook    = `<svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>`;
+  const iconUser    = `<svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>`;
+  const iconList    = `<svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>`;
+  const iconCheck   = `<svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
+  const iconWarning = `<svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>`;
+  const iconTrash   = `<svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>`;
 
+  // LIVRES
   async function chargerLivres() {
     try {
       tousLesLivres = await api('livres', '/livres');
@@ -614,14 +664,14 @@
       mettreAJourStats(tousLesLivres);
     } catch(e) {
       document.getElementById('table-livres').innerHTML =
-        `<div class="empty"><div class="icon">⚠️</div><p>${e.message}</p></div>`;
+        `<div class="empty">${iconWarning}<p>${e.message}</p></div>`;
     }
   }
 
   function mettreAJourStats(livres) {
     const dispo = livres.filter(l => l.disponible).length;
-    document.getElementById('stat-total').textContent    = livres.length;
-    document.getElementById('stat-dispo').textContent    = dispo;
+    document.getElementById('stat-total').textContent     = livres.length;
+    document.getElementById('stat-dispo').textContent     = dispo;
     document.getElementById('stat-empruntes').textContent = livres.length - dispo;
   }
 
@@ -638,16 +688,13 @@
   function afficherLivres(livres) {
     if (!livres.length) {
       document.getElementById('table-livres').innerHTML =
-        `<div class="empty"><div class="icon">📭</div><p>Aucun livre trouvé</p></div>`;
+        `<div class="empty">${iconBook}<p>Aucun livre trouve</p></div>`;
       return;
     }
     document.getElementById('table-livres').innerHTML = `
       <table>
         <thead>
-          <tr>
-            <th>#</th><th>Titre</th><th>Auteur</th><th>ISBN</th>
-            <th>Genre</th><th>Statut</th><th>Actions</th>
-          </tr>
+          <tr><th>#</th><th>Titre</th><th>Auteur</th><th>ISBN</th><th>Genre</th><th>Statut</th><th>Actions</th></tr>
         </thead>
         <tbody>
           ${livres.map(l => `
@@ -655,17 +702,11 @@
               <td>${l.id}</td>
               <td><strong>${l.titre}</strong></td>
               <td>${l.auteur}</td>
-              <td style="font-family:monospace;font-size:12px">${l.isbn}</td>
+              <td class="mono">${l.isbn}</td>
               <td>${l.genre || '<span style="color:var(--muted)">—</span>'}</td>
+              <td><span class="badge ${l.disponible ? 'badge-green' : 'badge-red'}">${l.disponible ? 'Disponible' : 'Emprunte'}</span></td>
               <td>
-                <span class="badge ${l.disponible ? 'badge-green' : 'badge-red'}">
-                  ${l.disponible ? 'Disponible' : 'Emprunté'}
-                </span>
-              </td>
-              <td>
-                <div class="actions">
-                  <button class="btn btn-ghost btn-sm" onclick="supprimerLivre(${l.id})">🗑</button>
-                </div>
+                <button class="btn btn-ghost btn-sm" onclick="supprimerLivre(${l.id})">${iconTrash}</button>
               </td>
             </tr>
           `).join('')}
@@ -687,7 +728,7 @@
     try {
       await api('livres', '/livres', 'POST', livre);
       closeModal('modal-livre');
-      toast('Livre ajouté avec succès ✓');
+      toast('Livre ajoute avec succes');
       chargerLivres();
       ['l-titre','l-auteur','l-isbn','l-annee','l-genre'].forEach(id =>
         document.getElementById(id).value = '');
@@ -698,27 +739,24 @@
     if (!confirm('Supprimer ce livre ?')) return;
     try {
       await api('livres', `/livres/${id}`, 'DELETE');
-      toast('Livre supprimé');
+      toast('Livre supprime');
       chargerLivres();
     } catch(e) { toast(e.message, 'error'); }
   }
 
-  // ════════════════════════════════════════════
   // UTILISATEURS
-  // ════════════════════════════════════════════
-
   async function chargerUtilisateurs() {
     try {
       const liste = await api('utilisateurs', '/utilisateurs');
       const etudiants = liste.filter(u => u.type === 'etudiant').length;
       const profs     = liste.filter(u => u.type === 'professeur').length;
-      document.getElementById('stat-u-total').textContent   = liste.length;
+      document.getElementById('stat-u-total').textContent    = liste.length;
       document.getElementById('stat-u-etudiant').textContent = etudiants;
-      document.getElementById('stat-u-prof').textContent    = profs;
+      document.getElementById('stat-u-prof').textContent     = profs;
 
       if (!liste.length) {
         document.getElementById('table-utilisateurs').innerHTML =
-          `<div class="empty"><div class="icon">👤</div><p>Aucun membre inscrit</p></div>`;
+          `<div class="empty">${iconUser}<p>Aucun membre inscrit</p></div>`;
         return;
       }
 
@@ -728,7 +766,7 @@
         personnel_administratif: 'badge-amber',
       };
       const typeLabel = {
-        etudiant: 'Étudiant',
+        etudiant: 'Etudiant',
         professeur: 'Professeur',
         personnel_administratif: 'Personnel adm.',
       };
@@ -744,10 +782,10 @@
                 <td>${u.id}</td>
                 <td><strong>${u.prenom} ${u.nom}</strong></td>
                 <td>${u.email}</td>
-                <td style="font-family:monospace;font-size:12px">${u.matricule}</td>
+                <td class="mono">${u.matricule}</td>
                 <td><span class="badge ${typeBadge[u.type]}">${typeLabel[u.type]}</span></td>
                 <td>
-                  <button class="btn btn-ghost btn-sm" onclick="supprimerUtilisateur(${u.id})">🗑</button>
+                  <button class="btn btn-ghost btn-sm" onclick="supprimerUtilisateur(${u.id})">${iconTrash}</button>
                 </td>
               </tr>
             `).join('')}
@@ -755,7 +793,7 @@
         </table>`;
     } catch(e) {
       document.getElementById('table-utilisateurs').innerHTML =
-        `<div class="empty"><div class="icon">⚠️</div><p>${e.message}</p></div>`;
+        `<div class="empty">${iconWarning}<p>${e.message}</p></div>`;
     }
   }
 
@@ -769,12 +807,12 @@
       type:      document.getElementById('u-type').value,
     };
     if (!u.nom || !u.prenom || !u.email || !u.matricule) {
-      return toast('Tous les champs obligatoires doivent être remplis', 'error');
+      return toast('Tous les champs obligatoires doivent etre remplis', 'error');
     }
     try {
       await api('utilisateurs', '/utilisateurs', 'POST', u);
       closeModal('modal-utilisateur');
-      toast('Membre inscrit avec succès ✓');
+      toast('Membre inscrit avec succes');
       chargerUtilisateurs();
     } catch(e) { toast(e.message, 'error'); }
   }
@@ -783,15 +821,12 @@
     if (!confirm('Supprimer ce membre ?')) return;
     try {
       await api('utilisateurs', `/utilisateurs/${id}`, 'DELETE');
-      toast('Membre supprimé');
+      toast('Membre supprime');
       chargerUtilisateurs();
     } catch(e) { toast(e.message, 'error'); }
   }
 
-  // ════════════════════════════════════════════
   // EMPRUNTS
-  // ════════════════════════════════════════════
-
   async function chargerEmprunts(filtre = 'en-cours') {
     try {
       const path = filtre === 'en-cours' ? '/emprunts/en-cours' : '/emprunts';
@@ -799,7 +834,7 @@
 
       if (!liste.length) {
         document.getElementById('table-emprunts').innerHTML =
-          `<div class="empty"><div class="icon">📋</div><p>Aucun emprunt ${filtre === 'en-cours' ? 'en cours' : ''}</p></div>`;
+          `<div class="empty">${iconList}<p>Aucun emprunt ${filtre === 'en-cours' ? 'en cours' : ''}</p></div>`;
         return;
       }
 
@@ -808,7 +843,7 @@
           <thead>
             <tr>
               <th>#</th><th>Utilisateur</th><th>Livre</th>
-              <th>Emprunté le</th><th>Retour prévu</th><th>Retour réel</th>
+              <th>Emprunte le</th><th>Retour prevu</th><th>Retour reel</th>
               <th>Statut</th><th>Actions</th>
             </tr>
           </thead>
@@ -817,7 +852,7 @@
               const rendu = !!e.date_retour_reelle;
               const statut = rendu
                 ? (e.retard ? `<span class="badge badge-amber">Rendu en retard</span>`
-                            : `<span class="badge badge-green">Rendu à temps</span>`)
+                            : `<span class="badge badge-green">Rendu a temps</span>`)
                 : `<span class="badge badge-teal">En cours</span>`;
               return `
                 <tr>
@@ -828,18 +863,14 @@
                   <td>${e.date_retour_prevue}</td>
                   <td>${e.date_retour_reelle || '<span style="color:var(--muted)">—</span>'}</td>
                   <td>${statut}</td>
-                  <td>
-                    ${!rendu
-                      ? `<button class="btn btn-amber btn-sm" onclick="retournerLivre(${e.id})">Retour</button>`
-                      : ''}
-                  </td>
+                  <td>${!rendu ? `<button class="btn btn-amber btn-sm" onclick="retournerLivre(${e.id})">Retour</button>` : ''}</td>
                 </tr>`;
             }).join('')}
           </tbody>
         </table>`;
     } catch(e) {
       document.getElementById('table-emprunts').innerHTML =
-        `<div class="empty"><div class="icon">⚠️</div><p>${e.message}</p></div>`;
+        `<div class="empty">${iconWarning}<p>${e.message}</p></div>`;
     }
   }
 
@@ -855,7 +886,7 @@
     try {
       await api('emprunts', '/emprunts', 'POST', body);
       closeModal('modal-emprunt');
-      toast('Emprunt enregistré ✓');
+      toast('Emprunt enregistre');
       chargerEmprunts('en-cours');
     } catch(e) { toast(e.message, 'error'); }
   }
@@ -864,21 +895,18 @@
     if (!confirm('Confirmer le retour de ce livre ?')) return;
     try {
       await api('emprunts', `/emprunts/${empruntId}/retour`, 'PUT');
-      toast('Retour enregistré ✓');
+      toast('Retour enregistre');
       chargerEmprunts('en-cours');
     } catch(e) { toast(e.message, 'error'); }
   }
 
-  // ════════════════════════════════════════════
   // RETARDS
-  // ════════════════════════════════════════════
-
   async function chargerRetards() {
     try {
       const liste = await api('emprunts', '/emprunts/retards');
       if (!liste.length) {
         document.getElementById('table-retards').innerHTML =
-          `<div class="empty"><div class="icon">✅</div><p>Aucun retard en ce moment !</p></div>`;
+          `<div class="empty">${iconCheck}<p>Aucun retard en ce moment</p></div>`;
         return;
       }
       document.getElementById('table-retards').innerHTML = `
@@ -886,7 +914,7 @@
           <thead>
             <tr>
               <th>#</th><th>Utilisateur</th><th>Livre</th>
-              <th>Date emprunt</th><th>Date prévue</th><th>Jours de retard</th><th>Actions</th>
+              <th>Date emprunt</th><th>Date prevue</th><th>Jours de retard</th><th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -902,22 +930,18 @@
                   <td>${e.date_emprunt}</td>
                   <td>${e.date_retour_prevue}</td>
                   <td><span class="badge badge-red">+${jours} jour(s)</span></td>
-                  <td>
-                    ${!e.date_retour_reelle
-                      ? `<button class="btn btn-amber btn-sm" onclick="retournerLivre(${e.id})">Retour</button>`
-                      : ''}
-                  </td>
+                  <td>${!e.date_retour_reelle ? `<button class="btn btn-amber btn-sm" onclick="retournerLivre(${e.id})">Retour</button>` : ''}</td>
                 </tr>`;
             }).join('')}
           </tbody>
         </table>`;
     } catch(e) {
       document.getElementById('table-retards').innerHTML =
-        `<div class="empty"><div class="icon">⚠️</div><p>${e.message}</p></div>`;
+        `<div class="empty">${iconWarning}<p>${e.message}</p></div>`;
     }
   }
 
-  // ── Chargement initial ───────────────────────
+  // Chargement initial
   chargerLivres();
 </script>
 </body>
