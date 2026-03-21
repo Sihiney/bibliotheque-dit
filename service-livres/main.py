@@ -28,8 +28,7 @@ app.add_middleware(
 # ─────────────────────────────────────────────
 @app.get("/livres", response_model=List[schemas.LivreResponse])
 def lister_livres(db: Session = Depends(get_db)):
-    """Retourne la liste de tous les livres."""
-    return db.query(models.Livre).all()
+    return db.query(models.Livre).order_by(models.Livre.id).all()
 
 # ─────────────────────────────────────────────
 # GET /livres/recherche — Rechercher un livre
