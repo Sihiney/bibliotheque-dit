@@ -37,7 +37,7 @@ Projet DevOps - Master 1 Intelligence Artificielle — Dakar Institute of Techno
 
 ```bash
 # 1. Cloner le projet
-git clone https://github.com/TON_USERNAME/bibliotheque-dit.git
+git clone https://github.com/Sihiney/bibliotheque-dit.git
 cd bibliotheque-dit
 
 # 2. Lancer toute l'application
