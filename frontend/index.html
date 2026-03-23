@@ -600,6 +600,42 @@
 </div>
 
 
+
+<!-- MODAL : Profil utilisateur -->
+<div class="overlay" id="modal-profil-utilisateur">
+  <div class="modal">
+    <h3>Profil du membre</h3>
+    <div class="form-group">
+      <label>Nom complet</label>
+      <input type="text" id="profil-nom" disabled style="background:var(--light);color:var(--navy);">
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="text" id="profil-email" disabled style="background:var(--light);color:var(--navy);">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Téléphone</label>
+        <input type="text" id="profil-telephone" disabled style="background:var(--light);color:var(--navy);">
+      </div>
+      <div class="form-group">
+        <label>Matricule</label>
+        <input type="text" id="profil-matricule" disabled style="background:var(--light);color:var(--navy);">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Type de membre</label>
+      <input type="text" id="profil-type" disabled style="background:var(--light);color:var(--navy);">
+    </div>
+    <div class="form-group">
+      <label>Historique des emprunts</label>
+      <div id="profil-emprunts" style="font-size:13px;color:var(--muted);padding:8px 0;">Chargement...</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-profil-utilisateur')">Fermer</button>
+    </div>
+  </div>
+</div>
 <!-- MODAL : Modifier un livre -->
 <div class="overlay" id="modal-modifier-livre">
   <div class="modal">
@@ -724,6 +760,7 @@
 
   // SVG icones simples pour les etats vides
   const iconBook    = `<svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>`;
+  const iconUserBtn = `<svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>`;
   const iconUser    = `<svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>`;
   const iconList    = `<svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>`;
   const iconCheck   = `<svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
@@ -864,6 +901,7 @@
                 <td><span class="badge ${typeBadge[u.type]}">${typeLabel[u.type]}</span></td>
                 <td>
                   <div class="actions">
+                    <button class="btn btn-ghost btn-sm" onclick="voirProfil(${u.id})" title="Voir le profil">${iconUserBtn}</button>
                     <button class="btn btn-ghost btn-sm" onclick="ouvrirModifierUtilisateur(${u.id}, '${u.nom.replace(/'/g, "&#39;")}', '${u.prenom.replace(/'/g, "&#39;")}', '${u.email}', '${u.telephone||''}', '${u.type}')">${iconEdit}</button>
                     <button class="btn btn-ghost btn-sm" onclick="supprimerUtilisateur(${u.id})">${iconTrash}</button>
                   </div>
@@ -1045,6 +1083,53 @@
     }
   }
 
+
+
+  // PROFIL UTILISATEUR
+  async function voirProfil(id) {
+    openModal('modal-profil-utilisateur');
+    try {
+      const u = await api('utilisateurs', `/utilisateurs/${id}`);
+      const typeLabel = {
+        'ETUDIANT': 'Étudiant',
+        'PROFESSEUR': 'Professeur',
+        'PERSONNEL_ADMINISTRATIF': 'Personnel administratif',
+        'etudiant': 'Étudiant',
+        'professeur': 'Professeur',
+        'personnel_administratif': 'Personnel administratif',
+      };
+      document.getElementById('profil-nom').value       = `${u.prenom} ${u.nom}`;
+      document.getElementById('profil-email').value     = u.email;
+      document.getElementById('profil-telephone').value = u.telephone || '-';
+      document.getElementById('profil-matricule').value = u.matricule;
+      document.getElementById('profil-type').value      = typeLabel[u.type] || u.type;
+
+      // Charger l'historique des emprunts du membre
+      const emprunts = await api('emprunts', `/emprunts/utilisateur/${id}`);
+      if (!emprunts.length) {
+        document.getElementById('profil-emprunts').innerHTML = 'Aucun emprunt enregistré.';
+      } else {
+        const livreIds = [...new Set(emprunts.map(e => e.livre_id))];
+        const livres = await Promise.all(livreIds.map(lid => api('livres', `/livres/${lid}`).catch(() => null)));
+        const livreMap = {};
+        livreIds.forEach((lid, i) => { if (livres[i]) livreMap[lid] = livres[i].titre; });
+        document.getElementById('profil-emprunts').innerHTML = emprunts.map(e => {
+          const titre  = livreMap[e.livre_id] || `Livre #${e.livre_id}`;
+          const statut = e.date_retour_reelle
+            ? `<span class="badge badge-green">Rendu</span>`
+            : `<span class="badge badge-teal">En cours</span>`;
+          return `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);">
+            <span>${titre}</span>
+            <span style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);">
+              ${e.date_emprunt} ${statut}
+            </span>
+          </div>`;
+        }).join('');
+      }
+    } catch(e) {
+      document.getElementById('profil-emprunts').innerHTML = `Erreur : ${e.message}`;
+    }
+  }
 
   // MODIFIER LIVRE
   function ouvrirModifierLivre(id, titre, auteur, isbn, annee, genre) {
