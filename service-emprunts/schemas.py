@@ -2,14 +2,16 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import date
 
+
 class EmpruntCreate(BaseModel):
-    """Données pour CRÉER un emprunt (emprunter un livre)."""
+    """Données attendues à la création d'un emprunt."""
     utilisateur_id:     int
     livre_id:           int
-    date_retour_prevue: Optional[date] = None  # Si absent → +14 jours automatiquement
+    date_retour_prevue: Optional[date] = None  # Si absent, le backend applique +14 jours
+
 
 class EmpruntResponse(BaseModel):
-    """Ce qu'on retourne après une opération sur un emprunt."""
+    """Structure retournée par l'API pour un emprunt."""
     id:                 int
     utilisateur_id:     int
     livre_id:           int

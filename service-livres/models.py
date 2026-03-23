@@ -1,17 +1,15 @@
 from sqlalchemy import Column, Integer, String, Boolean
 from database import Base
 
+
 class Livre(Base):
-    """
-    Représente la table 'livres' dans PostgreSQL.
-    Chaque attribut = une colonne dans la table.
-    """
+    """Représente la table 'livres' dans PostgreSQL."""
     __tablename__ = "livres"
 
-    id          = Column(Integer, primary_key=True, index=True)
-    titre       = Column(String(255), nullable=False)
-    auteur      = Column(String(255), nullable=False)
-    isbn        = Column(String(20), unique=True, nullable=False)
-    annee       = Column(Integer)
-    genre       = Column(String(100))
-    disponible  = Column(Boolean, default=True)  # True = pas emprunté
+    id         = Column(Integer, primary_key=True, index=True)
+    titre      = Column(String(255), nullable=False)
+    auteur     = Column(String(255), nullable=False)
+    isbn       = Column(String(20), unique=True, nullable=False)
+    annee      = Column(Integer)
+    genre      = Column(String(100))
+    disponible = Column(Boolean, default=True)  # False quand le livre est emprunté

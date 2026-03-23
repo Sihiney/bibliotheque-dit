@@ -3,24 +3,19 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
 
-# URL de connexion à PostgreSQL
-# On lit les infos depuis les variables d'environnement (définies dans docker-compose)
+# L'URL est injectée par Docker Compose via une variable d'environnement
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
     "postgresql://user:password@localhost:5432/bibliotheque"
 )
 
-# Création du moteur de connexion
-engine = create_engine(DATABASE_URL)
-
-# Fabrique de sessions (une session = une conversation avec la BDD)
+engine       = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base         = declarative_base()
 
-# Classe de base pour tous nos modèles
-Base = declarative_base()
 
-# Fonction utilitaire pour obtenir une session BDD
 def get_db():
+    """Fournit une session de base de données et la ferme après usage."""
     db = SessionLocal()
     try:
         yield db

@@ -1,31 +1,28 @@
 from pydantic import BaseModel
 from typing import Optional
 
+
 class LivreCreate(BaseModel):
-    """
-    Données attendues quand on CRÉE un livre (envoyées par l'utilisateur).
-    """
+    """Données attendues à la création d'un livre."""
     titre:  str
     auteur: str
     isbn:   str
     annee:  Optional[int] = None
     genre:  Optional[str] = None
 
+
 class LivreUpdate(BaseModel):
-    """
-    Données attendues quand on MODIFIE un livre (tous les champs sont optionnels).
-    """
-    titre:       Optional[str] = None
-    auteur:      Optional[str] = None
-    isbn:        Optional[str] = None
-    annee:       Optional[int] = None
-    genre:       Optional[str] = None
-    disponible:  Optional[bool] = None
+    """Données pour la modification d'un livre. Tous les champs sont optionnels."""
+    titre:      Optional[str] = None
+    auteur:     Optional[str] = None
+    isbn:       Optional[str] = None
+    annee:      Optional[int] = None
+    genre:      Optional[str] = None
+    disponible: Optional[bool] = None
+
 
 class LivreResponse(BaseModel):
-    """
-    Ce qu'on RENVOIE à l'utilisateur après une requête.
-    """
+    """Structure retournée par l'API pour un livre."""
     id:         int
     titre:      str
     auteur:     str
