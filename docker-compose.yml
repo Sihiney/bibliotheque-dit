@@ -1,13 +1,8 @@
-version: '3.8'
-
-# ══════════════════════════════════════════════════════════
-#  BIBLIOTHÈQUE NUMÉRIQUE DIT — Docker Compose
-#  Lance tout avec : docker compose up --build
-# ══════════════════════════════════════════════════════════
+# Docker Compose - Bibliotheque Numerique DIT
+# Lancement : docker compose up --build
 
 services:
 
-  # ── BASE DE DONNÉES ──────────────────────────────────────
   postgres:
     image: postgres:16-alpine
     container_name: bibliotheque-db
@@ -16,7 +11,7 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB:       bibliotheque
     volumes:
-      - postgres_data:/var/lib/postgresql/data   # Les données survivent aux redémarrages
+      - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     healthcheck:
@@ -27,7 +22,6 @@ services:
     networks:
       - bibliotheque-network
 
-  # ── MICROSERVICE LIVRES ──────────────────────────────────
   service-livres:
     build: ./service-livres
     container_name: bibliotheque-livres
@@ -37,12 +31,11 @@ services:
       - "8001:8001"
     depends_on:
       postgres:
-        condition: service_healthy     # Attend que PostgreSQL soit prêt
+        condition: service_healthy
     networks:
       - bibliotheque-network
     restart: unless-stopped
 
-  # ── MICROSERVICE UTILISATEURS ────────────────────────────
   service-utilisateurs:
     build: ./service-utilisateurs
     container_name: bibliotheque-utilisateurs
@@ -57,13 +50,12 @@ services:
       - bibliotheque-network
     restart: unless-stopped
 
-  # ── MICROSERVICE EMPRUNTS ────────────────────────────────
   service-emprunts:
     build: ./service-emprunts
     container_name: bibliotheque-emprunts
     environment:
-      DATABASE_URL:            postgresql://user:password@postgres:5432/bibliotheque
-      SERVICE_LIVRES_URL:      http://service-livres:8001        # Nom du conteneur = nom de domaine
+      DATABASE_URL:             postgresql://user:password@postgres:5432/bibliotheque
+      SERVICE_LIVRES_URL:       http://service-livres:8001
       SERVICE_UTILISATEURS_URL: http://service-utilisateurs:8002
     ports:
       - "8003:8003"
@@ -78,12 +70,11 @@ services:
       - bibliotheque-network
     restart: unless-stopped
 
-  # ── FRONTEND ─────────────────────────────────────────────
   frontend:
     build: ./frontend
     container_name: bibliotheque-frontend
     ports:
-      - "80:80"                   # Accessible sur http://localhost
+      - "80:80"
     depends_on:
       - service-livres
       - service-utilisateurs
@@ -92,11 +83,9 @@ services:
       - bibliotheque-network
     restart: unless-stopped
 
-# ── VOLUMES (stockage persistant) ────────────────────────
 volumes:
   postgres_data:
 
-# ── RÉSEAU INTERNE ────────────────────────────────────────
 networks:
   bibliotheque-network:
     driver: bridge

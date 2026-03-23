@@ -1,7 +1,4 @@
-// ══════════════════════════════════════════════════════════
-//  BIBLIOTHEQUE NUMERIQUE DIT - Pipeline Jenkins CI/CD
-//  Ce fichier decrit les etapes automatiques a chaque push
-// ══════════════════════════════════════════════════════════
+// Pipeline CI/CD - Bibliotheque Numerique DIT
 
 pipeline {
 
