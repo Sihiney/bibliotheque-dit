@@ -15,12 +15,12 @@ Projet DevOps - Master 1 Intelligence Artificielle - Dakar Institute of Technolo
 ## Architecture
 
 ```
-├── service-livres/         → API Livres        (port 8001)
-├── service-utilisateurs/   → API Utilisateurs  (port 8002)
-├── service-emprunts/       → API Emprunts      (port 8003)
-├── frontend/               → Interface web     (port 80)
-├── docker-compose.yml      → Orchestration
-└── Jenkinsfile             → Pipeline CI/CD
+├── service-livres/         -> API Livres        (port 8001)
+├── service-utilisateurs/   -> API Utilisateurs  (port 8002)
+├── service-emprunts/       -> API Emprunts      (port 8003)
+├── frontend/               -> Interface web     (port 80)
+├── docker-compose.yml      -> Orchestration
+└── Jenkinsfile             -> Pipeline CI/CD
 ```
 
 **Technologies :** FastAPI (Python) · PostgreSQL · Docker · Jenkins
