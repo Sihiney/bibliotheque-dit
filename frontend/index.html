@@ -1059,9 +1059,9 @@
           </thead>
           <tbody>
             ${liste.map(e => {
-              const aujourd_hui = new Date();
-              const prevue      = new Date(e.date_retour_prevue);
-              const jours       = Math.max(0, Math.floor((aujourd_hui - prevue) / 86400000));
+              const dateRef  = e.date_retour_reelle ? new Date(e.date_retour_reelle) : new Date();
+              const prevue   = new Date(e.date_retour_prevue);
+              const jours    = Math.max(0, Math.floor((dateRef - prevue) / 86400000));
               const membre = userMap[e.utilisateur_id] || `Membre #${e.utilisateur_id}`;
               const titre  = livreMap[e.livre_id]      || `Livre #${e.livre_id}`;
               return `
