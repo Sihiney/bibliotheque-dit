@@ -158,7 +158,6 @@
       background: var(--white);
       border-radius: 12px;
       border: 1px solid var(--border);
-      overflow: hidden;
     }
     .card-header {
       padding: 18px 24px;
@@ -168,6 +167,7 @@
       justify-content: space-between;
       gap: 12px;
     }
+    .card table { margin-bottom: 20px; }
     .card-header h3 {
       font-family: 'DM Sans', sans-serif;
       font-size: 15px;
@@ -200,6 +200,10 @@
     /* TABLE */
     table { width: 100%; border-collapse: collapse; }
     thead tr { background: var(--light); }
+    thead tr:first-child th:first-child { border-radius: 12px 0 0 0; }
+    thead tr:first-child th:last-child  { border-radius: 0 12px 0 0; }
+    tbody tr:last-child td:first-child  { border-radius: 0 0 0 12px; }
+    tbody tr:last-child td:last-child   { border-radius: 0 0 12px 0; }
     thead th {
       text-align: left;
       padding: 12px 20px;
@@ -720,6 +724,7 @@
   };
 
   let tousLesLivres = [];
+  let livresData = {}; // cache id -> objet livre
 
   // NAVIGATION
   function showPage(page) {
@@ -772,6 +777,7 @@
   async function chargerLivres() {
     try {
       tousLesLivres = await api('livres', '/livres');
+      tousLesLivres.forEach(l => livresData[l.id] = l);
       afficherLivres(tousLesLivres);
       mettreAJourStats(tousLesLivres);
     } catch(e) {
@@ -819,7 +825,7 @@
               <td><span class="badge ${l.disponible ? 'badge-green' : 'badge-red'}">${l.disponible ? 'Disponible' : 'Emprunté'}</span></td>
               <td>
                 <div class="actions">
-                  <button class="btn btn-ghost btn-sm" onclick="ouvrirModifierLivre(${l.id}, '${l.titre.replace(/'/g, "&#39;")}', '${l.auteur.replace(/'/g, "&#39;")}', '${l.isbn}', ${l.annee || ''}, '${(l.genre||'').replace(/'/g, "&#39;")}')">${iconEdit}</button>
+                  <button class="btn btn-ghost btn-sm" onclick="ouvrirModifierLivre(${l.id})">${iconEdit}</button>
                   <button class="btn btn-ghost btn-sm" onclick="supprimerLivre(${l.id})">${iconTrash}</button>
                 </div>
               </td>
@@ -1132,13 +1138,15 @@
   }
 
   // MODIFIER LIVRE
-  function ouvrirModifierLivre(id, titre, auteur, isbn, annee, genre) {
-    document.getElementById('ml-id').value    = id;
-    document.getElementById('ml-titre').value = titre;
-    document.getElementById('ml-auteur').value = auteur;
-    document.getElementById('ml-isbn').value  = isbn;
-    document.getElementById('ml-annee').value = annee || '';
-    document.getElementById('ml-genre').value = genre || '';
+  function ouvrirModifierLivre(id) {
+    const l = livresData[id];
+    if (!l) return;
+    document.getElementById('ml-id').value     = l.id;
+    document.getElementById('ml-titre').value  = l.titre;
+    document.getElementById('ml-auteur').value = l.auteur;
+    document.getElementById('ml-isbn').value   = l.isbn;
+    document.getElementById('ml-annee').value  = l.annee || '';
+    document.getElementById('ml-genre').value  = l.genre || '';
     openModal('modal-modifier-livre');
   }
 
