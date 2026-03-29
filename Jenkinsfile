@@ -81,10 +81,27 @@ pipeline {
             steps {
                 echo '====== ETAPE 4 : Arret des anciens conteneurs ======'
                 script {
+                    // Liste des conteneurs declares dans docker-compose.yml
+                    def conteneurs = [
+                        'bibliotheque-db',
+                        'bibliotheque-livres',
+                        'bibliotheque-utilisateurs',
+                        'bibliotheque-emprunts',
+                        'bibliotheque-frontend'
+                    ]
                     if (isUnix()) {
+                        // Suppression forcee de chaque conteneur par nom (orphelins inclus)
+                        for (c in conteneurs) {
+                            sh "docker stop ${c} || true"
+                            sh "docker rm   ${c} || true"
+                        }
                         sh "docker compose -f ${COMPOSE_FILE} down --remove-orphans || true"
                     } else {
-                        // Sur Windows, on ignore l'erreur si aucun conteneur n'est en cours
+                        // Suppression forcee de chaque conteneur par nom (orphelins inclus)
+                        for (c in conteneurs) {
+                            bat "docker stop ${c} || exit 0"
+                            bat "docker rm   ${c} || exit 0"
+                        }
                         try {
                             bat "docker compose -f ${COMPOSE_FILE} down --remove-orphans"
                         } catch (Exception e) {
