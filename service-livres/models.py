@@ -12,4 +12,5 @@ class Livre(Base):
     isbn       = Column(String(20), unique=True, nullable=False)
     annee      = Column(Integer)
     genre      = Column(String(100))
-    disponible = Column(Boolean, default=True)  # False quand le livre est emprunté
+    quantite   = Column(Integer, default=1)       # Nombre total d'exemplaires
+    disponible = Column(Integer, default=1)        # Nombre d'exemplaires disponibles

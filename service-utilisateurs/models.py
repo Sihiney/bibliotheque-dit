@@ -30,4 +30,5 @@ class Utilisateur(Base):
     piece_identite_type = Column(String(50), nullable=True)
     piece_identite_numero = Column(String(100), nullable=True)
     actif = Column(Boolean, default=True)
+    mot_de_passe_temporaire = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())

@@ -61,7 +61,9 @@ def ajouter_livre(livre: schemas.LivreCreate, db: Session = Depends(get_db)):
     if existant:
         raise HTTPException(status_code=400, detail="Un livre avec cet ISBN existe déjà")
 
-    nouveau_livre = models.Livre(**livre.model_dump())
+    data = livre.model_dump()
+    data["disponible"] = data["quantite"]  # Au départ tous les exemplaires sont disponibles
+    nouveau_livre = models.Livre(**data)
     db.add(nouveau_livre)
     db.commit()
     db.refresh(nouveau_livre)

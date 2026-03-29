@@ -51,6 +51,11 @@ class UtilisateurUpdate(BaseModel):
     piece_identite_numero: Optional[str] = None
 
 
+class ChangePasswordRequest(BaseModel):
+    ancien_mot_de_passe: str
+    nouveau_mot_de_passe: str
+
+
 class UtilisateurResponse(BaseModel):
     id: int
     nom: str
@@ -63,6 +68,7 @@ class UtilisateurResponse(BaseModel):
     piece_identite_type: Optional[str]
     piece_identite_numero: Optional[str]
     actif: bool
+    mot_de_passe_temporaire: bool = False
     created_at: Optional[datetime]
 
     class Config:

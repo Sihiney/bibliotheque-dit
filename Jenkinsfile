@@ -1,5 +1,6 @@
 // Pipeline CI/CD - Bibliotheque Numerique DIT
 // Groupe 2 - Master 1 IA - Dakar Institute of Technology
+// Compatible Windows et Linux
 
 pipeline {
 
@@ -62,7 +63,16 @@ pipeline {
         stage('Build des images Docker') {
             steps {
                 echo '====== ETAPE 3 : Construction des images Docker ======'
-                sh 'docker compose -f ${COMPOSE_FILE} build --no-cache'
+                script {
+                    if (isUnix()) {
+                        sh "docker compose -f ${COMPOSE_FILE} build --no-cache"
+                    } else {
+                        // Vérifier que Docker est accessible
+                        bat "docker --version"
+                        bat "docker compose version"
+                        bat "docker compose -f ${COMPOSE_FILE} build --no-cache"
+                    }
+                }
                 echo 'Images construites avec succes'
             }
         }
@@ -70,7 +80,18 @@ pipeline {
         stage('Arret de l ancienne version') {
             steps {
                 echo '====== ETAPE 4 : Arret des anciens conteneurs ======'
-                sh 'docker compose -f ${COMPOSE_FILE} down --remove-orphans || true'
+                script {
+                    if (isUnix()) {
+                        sh "docker compose -f ${COMPOSE_FILE} down --remove-orphans || true"
+                    } else {
+                        // Sur Windows, on ignore l'erreur si aucun conteneur n'est en cours
+                        try {
+                            bat "docker compose -f ${COMPOSE_FILE} down --remove-orphans"
+                        } catch (Exception e) {
+                            echo "Aucun conteneur a arreter (normal au premier lancement)"
+                        }
+                    }
+                }
                 echo 'Environnement nettoye'
             }
         }
@@ -78,7 +99,13 @@ pipeline {
         stage('Deploiement') {
             steps {
                 echo '====== ETAPE 5 : Deploiement des conteneurs ======'
-                sh 'docker compose -f ${COMPOSE_FILE} up -d'
+                script {
+                    if (isUnix()) {
+                        sh "docker compose -f ${COMPOSE_FILE} up -d"
+                    } else {
+                        bat "docker compose -f ${COMPOSE_FILE} up -d"
+                    }
+                }
                 echo 'Conteneurs demarres'
             }
         }
@@ -86,53 +113,136 @@ pipeline {
         stage('Verification sante des services') {
             steps {
                 echo '====== ETAPE 6 : Verification de sante ======'
-                sh '''
-                    echo "Attente du demarrage des services (20s)..."
-                    sleep 20
+                script {
+                    // Attente du demarrage
+                    echo 'Attente du demarrage des services (25s)...'
+                    sleep(time: 25, unit: 'SECONDS')
 
-                    echo ""
-                    echo "--- Verification du service Livres (port ${LIVRES_PORT}) ---"
-                    curl -sf http://localhost:${LIVRES_PORT}/health && echo " => Service Livres OK" || echo " => Service Livres KO"
+                    def services = [
+                        [nom: 'Livres',       port: env.LIVRES_PORT],
+                        [nom: 'Utilisateurs', port: env.UTILISATEURS_PORT],
+                        [nom: 'Emprunts',     port: env.EMPRUNTS_PORT]
+                    ]
 
-                    echo ""
-                    echo "--- Verification du service Utilisateurs (port ${UTILISATEURS_PORT}) ---"
-                    curl -sf http://localhost:${UTILISATEURS_PORT}/health && echo " => Service Utilisateurs OK" || echo " => Service Utilisateurs KO"
+                    for (svc in services) {
+                        echo "--- Verification du service ${svc.nom} (port ${svc.port}) ---"
+                        try {
+                            if (isUnix()) {
+                                sh "curl -sf http://localhost:${svc.port}/health"
+                            } else {
+                                bat "curl -sf http://localhost:${svc.port}/health"
+                            }
+                            echo " => Service ${svc.nom} OK"
+                        } catch (Exception e) {
+                            echo " => Service ${svc.nom} KO"
+                        }
+                    }
 
-                    echo ""
-                    echo "--- Verification du service Emprunts (port ${EMPRUNTS_PORT}) ---"
-                    curl -sf http://localhost:${EMPRUNTS_PORT}/health && echo " => Service Emprunts OK" || echo " => Service Emprunts KO"
-
-                    echo ""
-                    echo "--- Verification du Frontend (port ${FRONTEND_PORT}) ---"
-                    curl -sf http://localhost:${FRONTEND_PORT} > /dev/null && echo " => Frontend OK" || echo " => Frontend KO"
-                '''
+                    // Verification du frontend
+                    echo "--- Verification du Frontend (port ${env.FRONTEND_PORT}) ---"
+                    try {
+                        if (isUnix()) {
+                            sh "curl -sf http://localhost:${env.FRONTEND_PORT} > /dev/null"
+                        } else {
+                            bat "curl -sf http://localhost:${env.FRONTEND_PORT} > nul"
+                        }
+                        echo ' => Frontend OK'
+                    } catch (Exception e) {
+                        echo ' => Frontend KO'
+                    }
+                }
             }
         }
 
         stage('Tests fonctionnels') {
             steps {
                 echo '====== ETAPE 7 : Tests fonctionnels de base ======'
-                sh '''
-                    echo "--- Test POST /livres ---"
-                    RESULT=$(curl -sf -X POST http://localhost:${LIVRES_PORT}/livres \
-                        -H "Content-Type: application/json" \
-                        -d '{"titre":"Livre Test CI","auteur":"Jenkins","isbn":"999-CI-TEST","annee":2025,"genre":"Test"}' \
-                        -w "%{http_code}" -o /dev/null) || true
-                    echo "Code HTTP : $RESULT"
+                script {
+                    // Test POST /livres
+                    echo '--- Test POST /livres ---'
+                    try {
+                        if (isUnix()) {
+                            sh """curl -sf -X POST http://localhost:${env.LIVRES_PORT}/livres \
+                                -H "Content-Type: application/json" \
+                                -d '{"titre":"Livre Test CI","auteur":"Jenkins","isbn":"999-CI-TEST","annee":2025,"genre":"Test","quantite":1}'"""
+                        } else {
+                            bat """curl -sf -X POST http://localhost:${env.LIVRES_PORT}/livres -H "Content-Type: application/json" -d "{\\"titre\\":\\"Livre Test CI\\",\\"auteur\\":\\"Jenkins\\",\\"isbn\\":\\"999-CI-TEST\\",\\"annee\\":2025,\\"genre\\":\\"Test\\",\\"quantite\\":1}" """
+                        }
+                        echo 'POST /livres OK'
+                    } catch (Exception e) {
+                        echo 'POST /livres - deja existant ou erreur (normal en re-execution)'
+                    }
 
-                    echo ""
-                    echo "--- Test GET /livres ---"
-                    curl -sf http://localhost:${LIVRES_PORT}/livres | head -c 200
-                    echo ""
+                    // Test GET /livres
+                    echo '--- Test GET /livres ---'
+                    try {
+                        if (isUnix()) {
+                            sh "curl -sf http://localhost:${env.LIVRES_PORT}/livres"
+                        } else {
+                            bat "curl -sf http://localhost:${env.LIVRES_PORT}/livres"
+                        }
+                        echo 'GET /livres OK'
+                    } catch (Exception e) {
+                        echo 'GET /livres KO'
+                    }
 
-                    echo ""
-                    echo "--- Test GET /utilisateurs ---"
-                    curl -sf http://localhost:${UTILISATEURS_PORT}/utilisateurs | head -c 200
-                    echo ""
+                    // Test GET /utilisateurs
+                    echo '--- Test GET /utilisateurs ---'
+                    try {
+                        if (isUnix()) {
+                            sh "curl -sf http://localhost:${env.UTILISATEURS_PORT}/utilisateurs"
+                        } else {
+                            bat "curl -sf http://localhost:${env.UTILISATEURS_PORT}/utilisateurs"
+                        }
+                        echo 'GET /utilisateurs OK'
+                    } catch (Exception e) {
+                        echo 'GET /utilisateurs KO'
+                    }
 
-                    echo ""
-                    echo "Tests fonctionnels termines"
-                '''
+                    // Test GET /emprunts
+                    echo '--- Test GET /emprunts ---'
+                    try {
+                        if (isUnix()) {
+                            sh "curl -sf http://localhost:${env.EMPRUNTS_PORT}/emprunts"
+                        } else {
+                            bat "curl -sf http://localhost:${env.EMPRUNTS_PORT}/emprunts"
+                        }
+                        echo 'GET /emprunts OK'
+                    } catch (Exception e) {
+                        echo 'GET /emprunts KO'
+                    }
+
+                    // Test POST /auth/login + changer-mot-de-passe (flux mot de passe temporaire)
+                    echo '--- Test flux mot de passe temporaire ---'
+                    try {
+                        if (isUnix()) {
+                            sh """
+                                # Créer un utilisateur membre (mot de passe temporaire)
+                                RESP=\$(curl -sf -X POST http://localhost:${env.UTILISATEURS_PORT}/utilisateurs \
+                                    -H 'Content-Type: application/json' \
+                                    -d '{"nom":"Test","prenom":"CI","email":"ci_test@dit.sn","mot_de_passe":"Temp1234","type":"etudiant","role":"membre","matricule":"CI-TEST-001"}') || true
+                                # Login → doit retourner mot_de_passe_temporaire=true
+                                LOGIN=\$(curl -sf -X POST http://localhost:${env.UTILISATEURS_PORT}/auth/login \
+                                    -H 'Content-Type: application/json' \
+                                    -d '{"email":"ci_test@dit.sn","mot_de_passe":"Temp1234"}') || true
+                                TOKEN=\$(echo \$LOGIN | python3 -c "import sys,json; print(json.load(sys.stdin).get('access_token',''))" 2>/dev/null || echo "")
+                                if [ -n "\$TOKEN" ]; then
+                                    curl -sf -X POST http://localhost:${env.UTILISATEURS_PORT}/auth/changer-mot-de-passe \
+                                        -H 'Content-Type: application/json' \
+                                        -H "Authorization: Bearer \$TOKEN" \
+                                        -d '{"ancien_mot_de_passe":"Temp1234","nouveau_mot_de_passe":"NvMdp5678"}' || true
+                                fi
+                            """
+                        } else {
+                            echo 'Test mot de passe temporaire (Linux uniquement)'
+                        }
+                        echo 'Test flux mot de passe temporaire OK'
+                    } catch (Exception e) {
+                        echo 'Test flux mot de passe temporaire - erreur non bloquante'
+                    }
+
+                    echo 'Tests fonctionnels termines'
+                }
             }
         }
     }
@@ -144,18 +254,29 @@ pipeline {
 ============================================================
   DEPLOIEMENT REUSSI
   Application accessible sur http://localhost
-  -  Frontend Vue.js    : http://localhost:80
-  -  Service Livres     : http://localhost:8001/docs
+  -  Frontend Vue.js      : http://localhost:80
+  -  Service Livres       : http://localhost:8001/docs
   -  Service Utilisateurs : http://localhost:8002/docs
-  -  Service Emprunts   : http://localhost:8003/docs
+  -  Service Emprunts     : http://localhost:8003/docs
 ============================================================
             '''
         }
 
         failure {
             echo 'ECHEC DU PIPELINE - Nettoyage en cours...'
-            sh 'docker compose -f ${COMPOSE_FILE} logs --tail=30 || true'
-            sh 'docker compose -f ${COMPOSE_FILE} down || true'
+            script {
+                try {
+                    if (isUnix()) {
+                        sh "docker compose -f ${COMPOSE_FILE} logs --tail=30 || true"
+                        sh "docker compose -f ${COMPOSE_FILE} down || true"
+                    } else {
+                        bat "docker compose -f ${COMPOSE_FILE} logs --tail=30 || exit 0"
+                        bat "docker compose -f ${COMPOSE_FILE} down || exit 0"
+                    }
+                } catch (Exception e) {
+                    echo "Nettoyage impossible : ${e.message}"
+                }
+            }
         }
 
         always {

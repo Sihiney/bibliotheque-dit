@@ -140,6 +140,27 @@ def get_me(current_user: models.Utilisateur = Depends(get_current_user)):
     return current_user
 
 
+@app.post("/auth/changer-mot-de-passe", response_model=schemas.UtilisateurResponse)
+def changer_mot_de_passe(
+    data: schemas.ChangePasswordRequest,
+    current_user: models.Utilisateur = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Permet à l'utilisateur de changer son mot de passe (obligatoire si temporaire)."""
+    if not verify_password(data.ancien_mot_de_passe, current_user.mot_de_passe):
+        raise HTTPException(status_code=400, detail="Ancien mot de passe incorrect")
+    if len(data.nouveau_mot_de_passe) < 6:
+        raise HTTPException(status_code=400, detail="Le nouveau mot de passe doit contenir au moins 6 caractères")
+    if data.ancien_mot_de_passe == data.nouveau_mot_de_passe:
+        raise HTTPException(status_code=400, detail="Le nouveau mot de passe doit être différent de l'ancien")
+
+    current_user.mot_de_passe = hash_password(data.nouveau_mot_de_passe)
+    current_user.mot_de_passe_temporaire = False
+    db.commit()
+    db.refresh(current_user)
+    return current_user
+
+
 # ── Endpoints CRUD (compatibilité) ──
 
 @app.get("/utilisateurs", response_model=List[schemas.UtilisateurResponse])
@@ -170,7 +191,10 @@ def creer_utilisateur(utilisateur: schemas.UtilisateurCreate, db: Session = Depe
 
     data = utilisateur.model_dump()
     data["mot_de_passe"] = hash_password(data["mot_de_passe"])
-    nouveau = models.Utilisateur(**data)
+    # Les comptes membres créés par l'admin ont un mot de passe temporaire.
+    # Les comptes admin (ex: bootstrap initial) n'ont pas de mot de passe temporaire.
+    est_temporaire = (utilisateur.role == RoleUtilisateur.membre)
+    nouveau = models.Utilisateur(**data, mot_de_passe_temporaire=est_temporaire)
     db.add(nouveau)
     db.commit()
     db.refresh(nouveau)
@@ -184,6 +208,20 @@ def modifier_utilisateur(utilisateur_id: int, mise_a_jour: schemas.UtilisateurUp
         raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
     for champ, valeur in mise_a_jour.model_dump(exclude_unset=True).items():
         setattr(utilisateur, champ, valeur)
+    db.commit()
+    db.refresh(utilisateur)
+    return utilisateur
+
+
+@app.put("/utilisateurs/{utilisateur_id}/desactiver", response_model=schemas.UtilisateurResponse)
+def desactiver_utilisateur(utilisateur_id: int, db: Session = Depends(get_db)):
+    """Désactive un compte membre sans le supprimer (conservation de l'historique)."""
+    utilisateur = db.query(models.Utilisateur).filter(models.Utilisateur.id == utilisateur_id).first()
+    if not utilisateur:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+    if utilisateur.role.value == "admin":
+        raise HTTPException(status_code=403, detail="Impossible de désactiver un compte administrateur")
+    utilisateur.actif = False
     db.commit()
     db.refresh(utilisateur)
     return utilisateur

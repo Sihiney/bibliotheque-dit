@@ -4,11 +4,12 @@ from typing import Optional
 
 class LivreCreate(BaseModel):
     """Données attendues à la création d'un livre."""
-    titre:  str
-    auteur: str
-    isbn:   str
-    annee:  Optional[int] = None
-    genre:  Optional[str] = None
+    titre:    str
+    auteur:   str
+    isbn:     str
+    annee:    Optional[int] = None
+    genre:    Optional[str] = None
+    quantite: int = 1
 
 
 class LivreUpdate(BaseModel):
@@ -18,7 +19,8 @@ class LivreUpdate(BaseModel):
     isbn:       Optional[str] = None
     annee:      Optional[int] = None
     genre:      Optional[str] = None
-    disponible: Optional[bool] = None
+    quantite:   Optional[int] = None
+    disponible: Optional[int] = None
 
 
 class LivreResponse(BaseModel):
@@ -29,7 +31,8 @@ class LivreResponse(BaseModel):
     isbn:       str
     annee:      Optional[int]
     genre:      Optional[str]
-    disponible: bool
+    quantite:   int
+    disponible: int
 
     class Config:
-        from_attributes = True  # Permet la conversion depuis un objet SQLAlchemy
+        from_attributes = True
