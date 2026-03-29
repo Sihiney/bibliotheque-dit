@@ -1,1212 +1,454 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Bibliothèque Numérique — DIT</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --navy:   #0D2B45;
-      --teal:   #1A6B72;
-      --amber:  #E8870A;
-      --light:  #F5F2EB;
-      --white:  #FFFFFF;
-      --muted:  #8A9099;
-      --border: #DDD9D0;
-      --danger: #C0392B;
-      --success:#1A7F4B;
-    }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Bibliothèque Numérique — DIT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<style>
+:root{
+  --dit:#014955;--dit-l:#026d7e;--dit-xl:#03899e;--dit-bg:#e8f4f6;
+  --navy:#0f172a;--navy-l:#1e293b;--white:#fff;--light:#f7fafa;
+  --muted:#7c9a9e;--border:#d5e3e5;
+  --danger:#dc2626;--danger-bg:#fef2f2;--success:#059669;--success-bg:#ecfdf5;
+  --amber:#d97706;--amber-bg:#fffbeb;
+  --radius:12px;--shadow:0 1px 3px rgba(1,73,85,.08);--shadow-lg:0 12px 32px rgba(1,73,85,.12);
+  --font:'Plus Jakarta Sans',sans-serif
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);font-size:14px;background:var(--light);color:var(--navy);min-height:100vh;overflow-x:hidden}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes gradientMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
+.fade-up{animation:fadeUp .5s ease both}
+.d1{animation-delay:.05s}.d2{animation-delay:.1s}.d3{animation-delay:.15s}.d4{animation-delay:.2s}.d5{animation-delay:.25s}
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+/* ═══ AUTH PAGE ═══ */
+.auth-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,var(--dit) 0%,#02313a 40%,#011e23 100%);position:relative;overflow:hidden;padding:40px 24px}
+.auth-page::before{content:'';position:absolute;top:-30%;right:-20%;width:600px;height:600px;background:radial-gradient(circle,rgba(3,137,158,.15) 0%,transparent 70%);pointer-events:none;animation:float 6s ease-in-out infinite}
+.auth-page::after{content:'';position:absolute;bottom:-20%;left:-15%;width:400px;height:400px;background:radial-gradient(circle,rgba(255,255,255,.04) 0%,transparent 60%);pointer-events:none}
+.auth-container{position:relative;z-index:1;width:100%;max-width:860px;display:flex;align-items:flex-start;gap:48px}
+.auth-brand{flex:0 0 280px;text-align:left;animation:fadeUp .8s ease both;padding-top:40px}
+.auth-brand img{width:100%;max-width:260px;margin-bottom:20px;border-radius:14px}
+.auth-brand h1{font-size:26px;font-weight:800;color:var(--white);line-height:1.25;margin-bottom:10px}
+.auth-brand h1 span{color:#03899e}
+.auth-brand p{font-size:13.5px;color:rgba(255,255,255,.6);line-height:1.7}
+.auth-card{flex:1;min-width:0;background:var(--white);border-radius:16px;padding:36px 32px;box-shadow:var(--shadow-lg);animation:fadeUp .6s ease both;animation-delay:.15s}
+.auth-card h2{font-size:20px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.auth-card .auth-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
+@media(max-width:760px){
+.auth-container{flex-direction:column;max-width:480px;gap:24px}
+.auth-brand{flex:none;text-align:center;padding-top:0}
+.auth-brand h1{font-size:22px}
+}
+.auth-tabs{display:flex;gap:4px;background:var(--light);border-radius:10px;padding:3px;margin-bottom:24px}
+.auth-tab{flex:1;padding:10px;text-align:center;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .25s;color:var(--muted);background:transparent;border:none;font-family:var(--font)}
+.auth-tab.active{background:var(--white);color:var(--dit);box-shadow:var(--shadow)}
+.form-group{margin-bottom:14px}
+.form-label{display:block;font-size:11px;font-weight:700;color:var(--navy-l);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+.form-input,.form-select{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:var(--font);font-size:14px;color:var(--navy);background:var(--white);outline:none;transition:border .2s,box-shadow .2s}
+.form-input:focus,.form-select:focus{border-color:var(--dit-l);box-shadow:0 0 0 3px rgba(1,73,85,.1)}
+.form-input::placeholder{color:#b0c4c8}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-hint{font-size:11px;color:var(--muted);margin-top:4px}
+.forgot-link{display:block;text-align:right;font-size:12px;color:var(--dit-l);cursor:pointer;margin-top:-6px;margin-bottom:14px;text-decoration:none;font-weight:500}
+.forgot-link:hover{color:var(--dit);text-decoration:underline}
 
-    body {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      background: var(--light);
-      color: var(--navy);
-      display: flex;
-      min-height: 100vh;
-    }
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 22px;border-radius:10px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .25s;width:100%}
+.btn:active{transform:scale(.98)}
+.btn-dit{background:var(--dit);color:white}.btn-dit:hover{background:var(--dit-l);box-shadow:0 6px 16px rgba(1,73,85,.25)}
+.btn-ghost{background:transparent;color:var(--muted);border:1.5px solid var(--border);width:auto}.btn-ghost:hover{background:var(--light);color:var(--navy)}
+.btn-danger{background:var(--danger);color:white;width:auto}.btn-danger:hover{background:#ef4444}
+.btn-success{background:var(--success);color:white;width:auto}
+.btn-amber{background:var(--amber);color:white;width:auto}
+.btn-sm{padding:6px 14px;font-size:12px}
+.btn-ghost.active{background:var(--dit);color:white;border-color:var(--dit)}
+.alert{padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px}
+.alert-danger{background:var(--danger-bg);color:var(--danger)}
+.alert-info{background:var(--dit-bg);color:var(--dit);font-size:12px}
+.divider{display:flex;align-items:center;gap:12px;margin:18px 0;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
 
-    /* SIDEBAR */
-    aside {
-      width: 240px;
-      min-height: 100vh;
-      background: var(--navy);
-      display: flex;
-      flex-direction: column;
-      padding: 0 0 24px;
-      position: fixed;
-      top: 0; left: 0; bottom: 0;
-    }
+/* ═══ LAYOUT ═══ */
+.app-layout{display:flex;min-height:100vh}
+.sidebar{width:260px;min-height:100vh;background:var(--white);border-right:1.5px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;transition:transform .3s ease}
+.brand{padding:22px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.brand img{width:46px;border-radius:10px}
+.brand-text h1{font-size:14px;font-weight:700;color:var(--navy);line-height:1.2}
+.brand-text span{font-size:9px;font-weight:700;color:var(--dit);text-transform:uppercase;letter-spacing:1.5px}
+.sidebar nav{padding:14px 12px;flex:1}
+.nav-section{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;padding:14px 12px 6px;margin-top:4px}
+.sidebar nav a{display:flex;align-items:center;gap:12px;padding:10px 12px;color:#5a7a7e;text-decoration:none;font-size:13px;font-weight:500;border-radius:8px;transition:all .2s;cursor:pointer}
+.sidebar nav a:hover{color:var(--navy);background:var(--dit-bg)}
+.sidebar nav a.active{color:var(--dit);background:var(--dit-bg);font-weight:600}
+.sidebar nav a .nav-icon{width:18px;height:18px;flex-shrink:0}
+.sidebar nav a .nav-badge{margin-left:auto;background:var(--danger);color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px}
+.sidebar-footer{padding:16px 20px;border-top:1px solid var(--border)}
+.user-info{display:flex;align-items:center;gap:10px}
+.user-avatar{width:36px;height:36px;border-radius:50%;background:var(--dit);color:white;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.user-name{font-size:13px;font-weight:600;color:var(--navy)}
+.user-role-label{font-size:11px;color:var(--muted)}
+.logout-btn{margin-top:10px;font-size:12px;color:var(--danger);cursor:pointer;background:none;border:none;font-family:var(--font);font-weight:500}
+.logout-btn:hover{text-decoration:underline}
+.main-content{margin-left:260px;flex:1;padding:28px 32px 60px;max-width:calc(100vw - 260px);min-height:100vh}
+.hamburger{display:none;position:fixed;top:14px;left:14px;z-index:200;background:var(--dit);border:none;border-radius:10px;padding:10px 12px;cursor:pointer;box-shadow:var(--shadow-lg)}
+.hamburger svg{display:block}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99}
 
-    .brand {
-      padding: 28px 24px 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-    .brand h1 {
-      font-family: 'DM Serif Display', serif;
-      color: var(--white);
-      font-size: 18px;
-      line-height: 1.3;
-    }
-    .brand span {
-      display: block;
-      margin-top: 6px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--amber);
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-    }
+/* ═══ COMPONENTS ═══ */
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.page-header h2{font-size:22px;font-weight:700;color:var(--navy)}
+.page-header p{font-size:13px;color:var(--muted);margin-top:2px}
+.hero{background:linear-gradient(135deg,var(--dit) 0%,var(--dit-l) 50%,var(--dit-xl) 100%);background-size:200% 200%;animation:gradientMove 8s ease infinite;border-radius:16px;padding:36px 32px;color:white;margin-bottom:24px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-60%;right:-15%;width:400px;height:400px;background:radial-gradient(circle,rgba(255,255,255,.08) 0%,transparent 70%);pointer-events:none}
+.hero h2{font-size:24px;font-weight:700;margin-bottom:6px;position:relative}
+.hero p{font-size:14px;opacity:.8;max-width:500px;line-height:1.6;position:relative}
+.hero .hero-date{margin-top:12px;font-size:11px;opacity:.5;text-transform:uppercase;letter-spacing:1px;position:relative}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:24px}
+.stat-card{background:var(--white);border-radius:var(--radius);padding:20px;border:1.5px solid var(--border);transition:all .25s;animation:fadeUp .5s ease both}
+.stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);border-color:var(--dit-l)}
+.stat-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.stat-icon.ic-dit{background:var(--dit-bg);color:var(--dit)}
+.stat-icon.ic-green{background:var(--success-bg);color:var(--success)}
+.stat-icon.ic-amber{background:var(--amber-bg);color:var(--amber)}
+.stat-icon.ic-red{background:var(--danger-bg);color:var(--danger)}
+.stat-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}
+.stat-value{font-size:28px;font-weight:800;color:var(--navy);margin-top:2px}
+.card{background:var(--white);border-radius:var(--radius);border:1.5px solid var(--border);overflow:hidden;animation:fadeUp .5s ease both}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.card-header h3{font-size:14px;font-weight:700;color:var(--navy)}
+.search-bar{display:flex;align-items:center;gap:8px;background:var(--light);border:1.5px solid var(--border);border-radius:10px;padding:7px 12px;flex:1;max-width:300px;transition:border .2s,box-shadow .2s}
+.search-bar:focus-within{border-color:var(--dit-l);box-shadow:0 0 0 3px rgba(1,73,85,.08)}
+.search-bar input{border:none;background:transparent;outline:none;font-family:var(--font);font-size:13px;width:100%;color:var(--navy)}
+.search-bar input::placeholder{color:#b0c4c8}
+table{width:100%;border-collapse:collapse}
+thead tr{background:var(--light)}
+thead th{text-align:left;padding:10px 16px;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+tbody tr{border-top:1px solid var(--border);transition:background .15s}
+tbody tr:hover{background:var(--dit-bg)}
+tbody td{padding:12px 16px;font-size:13px;color:var(--navy)}
+tbody td strong{font-weight:600}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.badge-green{background:var(--success-bg);color:var(--success)}.badge-green .badge-dot{background:var(--success)}
+.badge-red{background:var(--danger-bg);color:var(--danger)}.badge-red .badge-dot{background:var(--danger)}
+.badge-amber{background:var(--amber-bg);color:var(--amber)}.badge-amber .badge-dot{background:var(--amber)}
+.badge-dit{background:var(--dit-bg);color:var(--dit)}.badge-dit .badge-dot{background:var(--dit)}
+.badge-navy{background:#f1f5f5;color:var(--navy-l)}
+.actions{display:flex;gap:4px;flex-wrap:wrap}
+.overlay{position:fixed;inset:0;background:rgba(1,73,85,.45);backdrop-filter:blur(4px);z-index:500;display:flex;align-items:center;justify-content:center;animation:fadeIn .15s ease both}
+.modal{background:var(--white);border-radius:16px;padding:28px;width:500px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:fadeUp .3s ease both}
+.modal h3{font-size:18px;font-weight:700;color:var(--navy);margin-bottom:20px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
+.toast-container{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px}
+.toast{padding:12px 20px;border-radius:10px;font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);animation:fadeUp .3s ease both;max-width:320px;color:white}
+.toast.success{background:var(--success)}.toast.error{background:var(--danger)}
+.empty{text-align:center;padding:48px 20px;color:var(--muted)}.empty p{font-size:14px}
+.loader{text-align:center;padding:36px;color:var(--muted);font-size:13px}.loader::after{content:'';display:block;width:24px;height:24px;margin:10px auto 0;border:3px solid var(--border);border-top-color:var(--dit);border-radius:50%;animation:spin .6s linear infinite}
+.mono{font-family:monospace;font-size:12px;background:var(--dit-bg);padding:2px 6px;border-radius:4px;color:var(--dit)}
+.service-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:24px}
+.svc-card{background:var(--white);border-radius:var(--radius);border:1.5px solid var(--border);padding:20px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+.svc-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--dit);transform:scaleX(0);transition:transform .3s}
+.svc-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}.svc-card:hover::after{transform:scaleX(1)}
+.svc-card h4{font-size:15px;font-weight:700;margin-bottom:4px;color:var(--navy)}
+.svc-card p{font-size:12px;color:var(--muted)}
+.svc-card .svc-count{margin-top:12px;font-size:22px;font-weight:800;color:var(--navy)}
+.svc-card .svc-count small{font-size:11px;font-weight:500;color:var(--muted);margin-left:4px}
+.activity-item{display:flex;align-items:flex-start;gap:12px;padding:14px 20px;border-bottom:1px solid var(--border);transition:background .15s;animation:fadeUp .4s ease both}
+.activity-item:last-child{border-bottom:none}
+.activity-item:hover{background:var(--dit-bg)}
+.act-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.act-dot.green{background:var(--success)}.act-dot.red{background:var(--danger)}.act-dot.dit{background:var(--dit)}
+.act-text{flex:1;font-size:13px}.act-text strong{font-weight:600}
+.act-time{display:block;font-size:11px;color:var(--muted);margin-top:2px}
 
-    nav { padding: 16px 0; flex: 1; }
-    nav a {
-      display: flex;
-      align-items: center;
-      padding: 12px 24px;
-      color: rgba(255,255,255,0.6);
-      text-decoration: none;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-      border-left: 3px solid transparent;
-    }
-    nav a:hover { color: var(--white); background: rgba(255,255,255,0.05); }
-    nav a.active {
-      color: var(--white);
-      background: rgba(255,255,255,0.08);
-      border-left-color: var(--amber);
-    }
-
-    .sidebar-footer {
-      padding: 16px 24px 0;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 11px;
-      color: rgba(255,255,255,0.3);
-      line-height: 1.6;
-    }
-
-    /* MAIN */
-    main {
-      margin-left: 240px;
-      flex: 1;
-      padding: 36px 40px;
-      max-width: calc(100vw - 240px);
-    }
-
-    .page { display: none; }
-    .page.active { display: block; }
-
-    /* PAGE HEADER */
-    .page-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 28px;
-    }
-    .page-header h2 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 28px;
-      font-weight: 400;
-      color: var(--navy);
-    }
-    .page-header p {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 4px;
-    }
-
-    /* STATS */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-bottom: 28px;
-    }
-    .stat-card {
-      background: var(--white);
-      border-radius: 12px;
-      padding: 20px 24px;
-      border: 1px solid var(--border);
-    }
-    .stat-card .label {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    .stat-card .value {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 32px;
-      font-weight: 600;
-      color: var(--navy);
-      margin-top: 6px;
-    }
-
-    /* CARD */
-    .card {
-      background: var(--white);
-      border-radius: 12px;
-      border: 1px solid var(--border);
-    }
-    .card-header {
-      padding: 18px 24px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-    .card table { margin-bottom: 20px; }
-    .card-header h3 {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--navy);
-    }
-
-    .search-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--light);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 7px 12px;
-      flex: 1;
-      max-width: 300px;
-    }
-    .search-bar input {
-      border: none;
-      background: transparent;
-      outline: none;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      width: 100%;
-      color: var(--navy);
-    }
-    .search-bar input::placeholder { color: var(--muted); }
-
-    /* TABLE */
-    table { width: 100%; border-collapse: collapse; }
-    thead tr { background: var(--light); }
-    thead tr:first-child th:first-child { border-radius: 12px 0 0 0; }
-    thead tr:first-child th:last-child  { border-radius: 0 12px 0 0; }
-    tbody tr:last-child td:first-child  { border-radius: 0 0 0 12px; }
-    tbody tr:last-child td:last-child   { border-radius: 0 0 12px 0; }
-    thead th {
-      text-align: left;
-      padding: 12px 20px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    tbody tr { border-top: 1px solid var(--border); transition: background 0.15s; }
-    tbody tr:hover { background: #FAFAF8; }
-    tbody td {
-      padding: 14px 20px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      color: var(--navy);
-    }
-    tbody td strong { font-weight: 600; }
-
-    /* BADGE */
-    .badge {
-      display: inline-block;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 11px;
-      font-weight: 600;
-    }
-    .badge-green { background: #E6F7EE; color: #1A7F4B; }
-    .badge-red   { background: #FDECEA; color: #C0392B; }
-    .badge-amber { background: #FEF3E2; color: #B86C0A; }
-    .badge-teal  { background: #E3F4F5; color: #1A6B72; }
-    .badge-navy  { background: #E5EAEF; color: #0D2B45; }
-
-    /* BUTTONS */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 9px 18px;
-      border-radius: 8px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      border: none;
-      transition: all 0.2s;
-    }
-    .btn-primary       { background: var(--teal);   color: white; }
-    .btn-primary:hover { background: #155960; }
-    .btn-amber         { background: var(--amber);  color: white; }
-    .btn-amber:hover   { background: #c97409; }
-    .btn-danger        { background: var(--danger); color: white; }
-    .btn-danger:hover  { background: #a93226; }
-    .btn-ghost         { background: transparent; color: var(--muted); border: 1px solid var(--border); }
-    .btn-ghost:hover   { background: var(--light); color: var(--navy); }
-    .btn-sm            { padding: 5px 12px; font-size: 12px; }
-
-    .actions { display: flex; gap: 6px; }
-
-    /* MODAL */
-    .overlay {
-      display: none;
-      position: fixed; inset: 0;
-      background: rgba(13,43,69,0.5);
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
-    }
-    .overlay.open { display: flex; }
-    .modal {
-      background: var(--white);
-      border-radius: 16px;
-      padding: 32px;
-      width: 480px;
-      max-width: 95vw;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    .modal h3 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 22px;
-      font-weight: 400;
-      color: var(--navy);
-      margin-bottom: 20px;
-    }
-
-    .form-group { margin-bottom: 16px; }
-    .form-group label {
-      display: block;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--muted);
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .form-group input,
-    .form-group select {
-      width: 100%;
-      padding: 10px 14px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      color: var(--navy);
-      background: var(--white);
-      outline: none;
-      transition: border 0.2s;
-    }
-    .form-group input:focus,
-    .form-group select:focus { border-color: var(--teal); }
-
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
-
-    /* TOAST */
-    #toast {
-      position: fixed;
-      bottom: 28px; right: 28px;
-      background: var(--navy);
-      color: white;
-      padding: 14px 20px;
-      border-radius: 10px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      opacity: 0;
-      transition: opacity 0.3s;
-      z-index: 999;
-      max-width: 320px;
-    }
-    #toast.show    { opacity: 1; }
-    #toast.error   { background: var(--danger); }
-    #toast.success { background: var(--success); }
-
-    /* EMPTY STATE */
-    .empty {
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--muted);
-    }
-    .empty .empty-icon {
-      width: 40px;
-      height: 40px;
-      margin: 0 auto 12px;
-      opacity: 0.4;
-    }
-    .empty p {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      color: var(--muted);
-    }
-
-    /* LOADER */
-    .loader {
-      text-align: center;
-      padding: 40px;
-      font-family: 'DM Sans', sans-serif;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    /* MONO */
-    .mono {
-      font-family: 'Courier New', monospace;
-      font-size: 12px;
-    }
-  </style>
+@media(max-width:900px){
+.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}
+.sidebar-overlay.open{display:block}.hamburger{display:block}
+.main-content{margin-left:0;max-width:100vw;padding:20px 16px 60px;padding-top:64px}
+.stats-grid{grid-template-columns:repeat(2,1fr)}.form-row{grid-template-columns:1fr}
+.hero{padding:28px 20px}.hero h2{font-size:20px}
+table{font-size:12px}thead th,tbody td{padding:8px 10px}
+}
+@media(max-width:600px){.stats-grid{grid-template-columns:1fr}.service-grid{grid-template-columns:1fr}.page-header{flex-direction:column;align-items:flex-start}.search-bar{max-width:100%}}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+</style>
 </head>
 <body>
+<div id="app">
 
-<!-- SIDEBAR -->
-<aside>
-  <div class="brand">
-    <h1>Bibliothèque<br>Numérique</h1>
-    <img src="data:image/png;base64,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" alt="DIT" style="display:block;margin-top:10px;width:160px;opacity:0.92;">
-  </div>
-  <nav>
-    <a class="active" onclick="showPage('livres')"        id="nav-livres">Livres</a>
-    <a onclick="showPage('utilisateurs')"                 id="nav-utilisateurs">Utilisateurs</a>
-    <a onclick="showPage('emprunts')"                     id="nav-emprunts">Emprunts</a>
-    <a onclick="showPage('retards')"                      id="nav-retards">Retards</a>
-  </nav>
-  <div class="sidebar-footer">
-    Groupe 2 - Master 1 IA DIT
-  </div>
+<!-- ═══ AUTH ═══ -->
+<div v-if="!user" class="auth-page">
+<div class="auth-container">
+<div class="auth-brand">
+<img :src="logoSrc" alt="DIT"/>
+<h1>Bienvenue à la <span>Bibliothèque Numérique</span> du DIT</h1>
+<p>Votre plateforme de gestion académique. Accédez au catalogue, empruntez des ouvrages et suivez vos prêts en toute simplicité.</p>
+</div>
+<div class="auth-card">
+<h2 v-if="authMode==='login'">Connexion</h2>
+<h2 v-else>Créer un compte</h2>
+<p class="auth-sub" v-if="authMode==='login'">Veuillez vous connecter pour accéder à la plateforme.</p>
+<p class="auth-sub" v-else>Première visite ? Inscrivez-vous en quelques secondes.</p>
+<div class="auth-tabs">
+<button class="auth-tab" :class="{active:authMode==='login'}" @click="authMode='login';authError=''">Connexion</button>
+<button class="auth-tab" :class="{active:authMode==='register'}" @click="authMode='register';authError=''">Inscription</button>
+</div>
+<div v-if="authError" class="alert alert-danger">{{ authError }}</div>
+<div v-if="forgotMode" class="alert alert-info" style="margin-bottom:16px">
+Pour réinitialiser votre mot de passe, veuillez contacter l'administrateur de la bibliothèque à <strong>admin@dit.sn</strong> avec votre email d'inscription.
+<br><a href="#" @click.prevent="forgotMode=false" style="color:var(--dit);font-weight:600;margin-top:6px;display:inline-block">← Retour à la connexion</a>
+</div>
+
+<!-- LOGIN -->
+<template v-if="authMode==='login'&&!forgotMode">
+<div class="form-group"><label class="form-label">Adresse email</label><input class="form-input" v-model="loginForm.email" type="email" placeholder="votre@email.com"></div>
+<div class="form-group"><label class="form-label">Mot de passe</label><input class="form-input" v-model="loginForm.mot_de_passe" type="password" placeholder="••••••••" @keyup.enter="doLogin"></div>
+<a class="forgot-link" @click.prevent="forgotMode=true">Mot de passe oublié ?</a>
+<button class="btn btn-dit" @click="doLogin" :disabled="authLoading">{{ authLoading?'Connexion en cours...':'Se connecter' }}</button>
+<div class="divider">ou</div>
+<p style="text-align:center;font-size:12px;color:var(--muted)">Pas encore de compte ? <a href="#" @click.prevent="authMode='register';authError=''" style="color:var(--dit);font-weight:600;text-decoration:none">Inscrivez-vous ici</a></p>
+</template>
+
+<!-- REGISTER -->
+<template v-if="authMode==='register'">
+<div class="form-row">
+<div class="form-group"><label class="form-label">Nom</label><input class="form-input" v-model="regForm.nom" placeholder="Votre nom"></div>
+<div class="form-group"><label class="form-label">Prénom</label><input class="form-input" v-model="regForm.prenom" placeholder="Votre prénom"></div>
+</div>
+<div class="form-group"><label class="form-label">Adresse email</label><input class="form-input" v-model="regForm.email" type="email" placeholder="votre@email.com"></div>
+<div class="form-group"><label class="form-label">Mot de passe</label><input class="form-input" v-model="regForm.mot_de_passe" type="password" placeholder="Minimum 6 caractères"></div>
+<div class="form-group"><label class="form-label">Confirmer le mot de passe</label><input class="form-input" v-model="regForm.confirm_mdp" type="password" placeholder="Retapez votre mot de passe" @keyup.enter="doRegister"></div>
+<div v-if="regForm.confirm_mdp && regForm.mot_de_passe !== regForm.confirm_mdp" class="alert alert-danger" style="padding:8px 12px;font-size:12px;margin-bottom:10px">Les mots de passe ne correspondent pas</div>
+<div class="form-row">
+<div class="form-group"><label class="form-label">Téléphone</label><input class="form-input" v-model="regForm.telephone" placeholder="+221 77..."></div>
+<div class="form-group"><label class="form-label">Vous êtes</label>
+<select class="form-select" v-model="regForm.type">
+<option value="etudiant">Étudiant(e)</option>
+<option value="professeur">Enseignant(e)</option>
+<option value="personnel_administratif">Personnel admin.</option>
+</select></div>
+</div>
+<div class="form-group" v-if="regForm.type==='etudiant'"><label class="form-label">Matricule étudiant *</label><input class="form-input" v-model="regForm.matricule" placeholder="Ex: NE2510081"></div>
+<template v-if="regForm.type!=='etudiant'">
+<div class="form-row">
+<div class="form-group"><label class="form-label">Type de pièce *</label>
+<select class="form-select" v-model="regForm.piece_identite_type"><option value="CNI">Carte nationale d'identité</option><option value="Passeport">Passeport</option><option value="Permis">Permis de conduire</option><option value="Autre">Autre document</option></select></div>
+<div class="form-group"><label class="form-label">N° de la pièce *</label><input class="form-input" v-model="regForm.piece_identite_numero" placeholder="Numéro du document"></div>
+</div>
+</template>
+<button class="btn btn-dit" @click="doRegister" :disabled="authLoading" style="margin-top:6px">{{ authLoading?"Inscription en cours...":"Créer mon compte" }}</button>
+<div class="divider">ou</div>
+<p style="text-align:center;font-size:12px;color:var(--muted)">Déjà inscrit ? <a href="#" @click.prevent="authMode='login';authError=''" style="color:var(--dit);font-weight:600;text-decoration:none">Connectez-vous</a></p>
+</template>
+</div>
+</div>
+</div>
+
+<!-- ═══ APP ═══ -->
+<template v-else>
+<button class="hamburger" @click="sidebarOpen=!sidebarOpen"><svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></button>
+<div class="sidebar-overlay" :class="{open:sidebarOpen}" @click="sidebarOpen=false"></div>
+<div class="app-layout">
+<aside class="sidebar" :class="{open:sidebarOpen}">
+<div class="brand"><img :src="logoSrc" alt="DIT"/><div class="brand-text"><h1>Bibliothèque Numérique</h1><span>Plateforme DIT</span></div></div>
+<nav>
+<div class="nav-section">Navigation</div>
+<a :class="{active:pg==='dashboard'}" @click="go('dashboard')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Tableau de bord</a>
+<div class="nav-section">Gestion</div>
+<a :class="{active:pg==='livres'}" @click="go('livres')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg>Livres</a>
+<a v-if="isAdmin" :class="{active:pg==='utilisateurs'}" @click="go('utilisateurs')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Utilisateurs</a>
+<a :class="{active:pg==='emprunts'}" @click="go('emprunts')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>Emprunts</a>
+<a :class="{active:pg==='retards'}" @click="go('retards')"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Retards<span class="nav-badge" v-if="retC>0">{{ retC }}</span></a>
+</nav>
+<div class="sidebar-footer">
+<div class="user-info"><div class="user-avatar">{{ uInit }}</div><div><div class="user-name">{{ user.prenom }} {{ user.nom }}</div><div class="user-role-label">{{ roleLabel }}</div></div></div>
+<button class="logout-btn" @click="logout">Se déconnecter</button>
+</div>
 </aside>
+<main class="main-content">
 
-<!-- MAIN -->
-<main>
+<!-- DASHBOARD ADMIN -->
+<section v-if="pg==='dashboard' && isAdmin">
+<div class="hero fade-up"><h2>Bienvenue, {{ user.prenom }} !</h2><p>Consultez les statistiques de la bibliothèque et gérez les ressources en temps réel depuis votre tableau de bord.</p><div class="hero-date">{{ fDate }}</div></div>
+<div class="stats-grid">
+<div class="stat-card fade-up d1" style="cursor:pointer" @click="go('livres')"><div class="stat-icon ic-dit"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg></div><div class="stat-label">Livres</div><div class="stat-value">{{ ds.livres }}</div></div>
+<div class="stat-card fade-up d2" style="cursor:pointer" @click="go('utilisateurs')"><div class="stat-icon ic-green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div class="stat-label">Membres</div><div class="stat-value">{{ ds.membres }}</div></div>
+<div class="stat-card fade-up d3" style="cursor:pointer" @click="go('emprunts')"><div class="stat-icon ic-amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg></div><div class="stat-label">Emprunts en cours</div><div class="stat-value">{{ ds.enCours }}</div></div>
+<div class="stat-card fade-up d4" style="cursor:pointer" @click="go('retards')"><div class="stat-icon ic-red"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="stat-label">Retards</div><div class="stat-value">{{ ds.retards }}</div></div>
+</div>
+<h3 style="font-size:16px;font-weight:700;margin-bottom:14px" class="fade-up d3">Accès rapide</h3>
+<div class="service-grid">
+<div class="svc-card fade-up d3" @click="go('livres')"><h4>Catalogue des livres</h4><p>Gérer le catalogue de la bibliothèque</p><div class="svc-count">{{ ds.livres }}<small>livres</small></div></div>
+<div class="svc-card fade-up d4" @click="go('utilisateurs')"><h4>Gestion des utilisateurs</h4><p>Membres inscrits à la bibliothèque</p><div class="svc-count">{{ ds.membres }}<small>membres</small></div></div>
+<div class="svc-card fade-up d5" @click="go('emprunts')"><h4>Gestion des emprunts</h4><p>Prêts et retours de livres</p><div class="svc-count">{{ ds.enCours }}<small>en cours</small></div></div>
+</div>
+<div class="card fade-up d4"><div class="card-header"><h3>Activités récentes</h3></div>
+<div v-if="acts.length"><div class="activity-item" v-for="(a,i) in acts" :key="i" :style="{'animation-delay':(i*.05)+'s'}"><span class="act-dot" :class="a.color"></span><div class="act-text"><span v-html="a.text"></span><span class="act-time">{{ a.time }}</span></div></div></div>
+<div v-else class="empty"><p>Aucune activité récente</p></div></div>
+</section>
 
-  <!-- PAGE LIVRES -->
-  <section class="page active" id="page-livres">
-    <div class="page-header">
-      <div>
-        <h2>Livres</h2>
-        <p>Gestion du catalogue de la bibliothèque</p>
-      </div>
-      <button class="btn btn-primary" onclick="openModal('modal-livre')">+ Ajouter un livre</button>
-    </div>
-    <div class="stats">
-      <div class="stat-card">
-        <div class="label">Total livres</div>
-        <div class="value" id="stat-total">—</div>
-      </div>
-      <div class="stat-card">
-        <div class="label">Disponibles</div>
-        <div class="value" id="stat-dispo">—</div>
-      </div>
-      <div class="stat-card">
-        <div class="label">Empruntés</div>
-        <div class="value" id="stat-empruntes">—</div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header">
-        <h3>Catalogue</h3>
-        <div class="search-bar">
-          <input type="text" id="search-livres" placeholder="Rechercher par titre, auteur, ISBN..." oninput="filtrerLivres(this.value)">
-        </div>
-      </div>
-      <div id="table-livres"><div class="loader">Chargement...</div></div>
-    </div>
-  </section>
+<!-- DASHBOARD ÉTUDIANT / PROFESSEUR -->
+<section v-if="pg==='dashboard' && !isAdmin">
+<div class="hero fade-up"><h2>Bienvenue, {{ user.prenom }} !</h2><p>Retrouvez vos emprunts en cours et les livres disponibles à la bibliothèque du DIT.</p><div class="hero-date">{{ fDate }}</div></div>
+<div class="stats-grid">
+<div class="stat-card fade-up d1"><div class="stat-icon ic-dit"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 4.5A2.5 2.5 0 016.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15z"/></svg></div><div class="stat-label">Livres disponibles</div><div class="stat-value">{{ myStats.dispo }}</div></div>
+<div class="stat-card fade-up d2"><div class="stat-icon ic-amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg></div><div class="stat-label">Mes emprunts en cours</div><div class="stat-value">{{ myStats.mesEnCours }}</div></div>
+<div class="stat-card fade-up d3"><div class="stat-icon ic-red"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="stat-label">Mes retards</div><div class="stat-value">{{ myStats.mesRetards }}</div></div>
+</div>
+<div class="card fade-up d3" style="margin-bottom:24px"><div class="card-header"><h3>Mes emprunts en cours</h3></div>
+<div v-if="myEmpsLoading" class="loader">Chargement</div>
+<div v-else-if="myEmps.length===0" class="empty"><p>Vous n'avez aucun emprunt en cours</p></div>
+<table v-else><thead><tr><th>Livre</th><th>Date d'emprunt</th><th>Retour prévu</th><th>Statut</th></tr></thead>
+<tbody><tr v-for="e in myEmps" :key="e.id"><td><strong>{{ e._l }}</strong></td><td>{{ e.date_emprunt }}</td><td>{{ e.date_retour_prevue }}</td><td><span v-if="isOverdue(e)" class="badge badge-red"><span class="badge-dot"></span>En retard</span><span v-else class="badge badge-green"><span class="badge-dot"></span>En cours</span></td></tr></tbody></table></div>
+<div class="card fade-up d4"><div class="card-header"><h3>Livres disponibles</h3><div class="search-bar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input v-model="lQ" placeholder="Rechercher un livre..."></div></div>
+<div v-if="lLoad" class="loader">Chargement</div>
+<div v-else-if="fLivDispo.length===0" class="empty"><p>Aucun livre disponible</p></div>
+<table v-else><thead><tr><th>Titre</th><th>Auteur</th><th>ISBN</th><th>Année</th><th>Genre</th></tr></thead>
+<tbody><tr v-for="l in fLivDispo" :key="l.id"><td><strong>{{ l.titre }}</strong></td><td>{{ l.auteur }}</td><td><span class="mono">{{ l.isbn }}</span></td><td>{{ l.annee||'—' }}</td><td>{{ l.genre||'—' }}</td></tr></tbody></table></div>
+</section>
 
-  <!-- PAGE UTILISATEURS -->
-  <section class="page" id="page-utilisateurs">
-    <div class="page-header">
-      <div>
-        <h2>Utilisateurs</h2>
-        <p>Membres inscrits à la bibliothèque</p>
-      </div>
-      <button class="btn btn-primary" onclick="openModal('modal-utilisateur')">+ Ajouter un membre</button>
-    </div>
-    <div class="stats">
-      <div class="stat-card">
-        <div class="label">Total membres</div>
-        <div class="value" id="stat-u-total">—</div>
-      </div>
-      <div class="stat-card">
-        <div class="label">Étudiants</div>
-        <div class="value" id="stat-u-etudiant">—</div>
-      </div>
-      <div class="stat-card">
-        <div class="label">Professeurs</div>
-        <div class="value" id="stat-u-prof">—</div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header">
-        <h3>Liste des membres</h3>
-      </div>
-      <div id="table-utilisateurs"><div class="loader">Chargement...</div></div>
-    </div>
-  </section>
+<!-- LIVRES -->
+<section v-if="pg==='livres'">
+<div class="page-header fade-up"><div><h2>Livres</h2><p>Catalogue de la bibliothèque</p></div><button v-if="isAdmin" class="btn btn-dit btn-sm" style="width:auto" @click="modal='livre'">+ Ajouter un livre</button></div>
+<div class="stats-grid"><div class="stat-card fade-up d1"><div class="stat-label">Total</div><div class="stat-value">{{ lS.total }}</div></div><div class="stat-card fade-up d2"><div class="stat-label">Disponibles</div><div class="stat-value">{{ lS.dispo }}</div></div><div class="stat-card fade-up d3"><div class="stat-label">Empruntés</div><div class="stat-value">{{ lS.emp }}</div></div></div>
+<div class="card fade-up d3"><div class="card-header"><h3>Catalogue</h3><div class="search-bar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input v-model="lQ" placeholder="Rechercher..."></div></div>
+<div v-if="lLoad" class="loader">Chargement</div>
+<div v-else-if="fLiv.length===0" class="empty"><p>Aucun livre</p></div>
+<table v-else><thead><tr><th>#</th><th>Titre</th><th>Auteur</th><th>ISBN</th><th>Année</th><th>Statut</th><th v-if="isAdmin">Actions</th></tr></thead>
+<tbody><tr v-for="l in fLiv" :key="l.id"><td>{{ l.id }}</td><td><strong>{{ l.titre }}</strong></td><td>{{ l.auteur }}</td><td><span class="mono">{{ l.isbn }}</span></td><td>{{ l.annee||'—' }}</td><td><span class="badge" :class="l.disponible?'badge-green':'badge-amber'"><span class="badge-dot"></span>{{ l.disponible?'Disponible':'Emprunté' }}</span></td><td v-if="isAdmin" class="actions"><button class="btn btn-ghost btn-sm" @click="eLivre(l)">Modifier</button><button class="btn btn-danger btn-sm" @click="dLivre(l.id)">Suppr.</button></td></tr></tbody></table></div>
+</section>
 
-  <!-- PAGE EMPRUNTS -->
-  <section class="page" id="page-emprunts">
-    <div class="page-header">
-      <div>
-        <h2>Emprunts</h2>
-        <p>Gestion des prêts et retours</p>
-      </div>
-      <button class="btn btn-primary" onclick="openModal('modal-emprunt')">+ Nouvel emprunt</button>
-    </div>
-    <div class="card">
-      <div class="card-header">
-        <h3>Historique des emprunts</h3>
-        <div class="actions">
-          <button class="btn btn-ghost btn-sm" onclick="chargerEmprunts('en-cours')">En cours</button>
-          <button class="btn btn-ghost btn-sm" onclick="chargerEmprunts('tous')">Tous</button>
-        </div>
-      </div>
-      <div id="table-emprunts"><div class="loader">Chargement...</div></div>
-    </div>
-  </section>
+<!-- UTILISATEURS -->
+<section v-if="pg==='utilisateurs'&&isAdmin">
+<div class="page-header fade-up"><div><h2>Utilisateurs</h2><p>Membres inscrits</p></div><button class="btn btn-dit btn-sm" style="width:auto" @click="Object.assign(mU,{id:null,nom:'',prenom:'',email:'',telephone:'',type:'etudiant',matricule:'',piece_identite_type:'CNI',piece_identite_numero:'',mot_de_passe_temp:''});modal='user'">+ Ajouter un membre</button></div>
+<div class="card fade-up d2"><div class="card-header"><h3>Liste des membres</h3></div>
+<div v-if="uLoad" class="loader">Chargement</div>
+<div v-else-if="usrs.length===0" class="empty"><p>Aucun membre</p></div>
+<table v-else><thead><tr><th>#</th><th>Nom</th><th>Email</th><th>Identifiant</th><th>Type</th><th>Rôle</th><th>Actions</th></tr></thead>
+<tbody><tr v-for="u in usrs" :key="u.id"><td>{{ u.id }}</td><td><strong>{{ u.prenom }} {{ u.nom }}</strong></td><td>{{ u.email }}</td><td><span class="mono">{{ u.matricule||u.piece_identite_numero||'—' }}</span></td><td><span class="badge badge-dit">{{ tLabel(u.type) }}</span></td><td><span class="badge" :class="u.role==='admin'?'badge-amber':'badge-navy'">{{ u.role }}</span></td><td class="actions"><button class="btn btn-ghost btn-sm" @click="eUser(u)">Modifier</button><button class="btn btn-danger btn-sm" @click="dUser(u.id)">Suppr.</button></td></tr></tbody></table></div>
+</section>
 
-  <!-- PAGE RETARDS -->
-  <section class="page" id="page-retards">
-    <div class="page-header">
-      <div>
-        <h2>Retards</h2>
-        <p>Livres non retournés à la date prévue</p>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header">
-        <h3>Emprunts en retard</h3>
-      </div>
-      <div id="table-retards"><div class="loader">Chargement...</div></div>
-    </div>
-  </section>
+<!-- EMPRUNTS -->
+<section v-if="pg==='emprunts'">
+<div class="page-header fade-up"><div><h2>Emprunts</h2><p>Gestion des prêts et retours</p></div><button v-if="isAdmin" class="btn btn-dit btn-sm" style="width:auto" @click="openEmpruntModal">+ Nouvel emprunt</button></div>
+<div class="card fade-up d2"><div class="card-header"><h3>Historique</h3><div class="actions"><button class="btn btn-ghost btn-sm" :class="{active:eF==='en-cours'}" @click="ldEmp('en-cours')">En cours</button><button class="btn btn-ghost btn-sm" :class="{active:eF==='tous'}" @click="ldEmp('tous')">Tous</button></div></div>
+<div v-if="eLoad" class="loader">Chargement</div>
+<div v-else-if="emps.length===0" class="empty"><p>Aucun emprunt</p></div>
+<table v-else><thead><tr><th>#</th><th>Membre</th><th>Livre</th><th>Emprunt</th><th>Retour prévu</th><th>Retour réel</th><th>Statut</th><th>Action</th></tr></thead>
+<tbody><tr v-for="e in emps" :key="e.id"><td>{{ e.id }}</td><td><strong>{{ e._m }}</strong></td><td>{{ e._l }}</td><td>{{ e.date_emprunt }}</td><td>{{ e.date_retour_prevue }}</td><td>{{ e.date_retour_reelle||'—' }}</td><td><span v-if="e.date_retour_reelle&&e.retard" class="badge badge-amber"><span class="badge-dot"></span>Rendu en retard</span><span v-else-if="e.date_retour_reelle" class="badge badge-green"><span class="badge-dot"></span>Rendu</span><span v-else class="badge badge-dit"><span class="badge-dot"></span>En cours</span></td><td><button v-if="!e.date_retour_reelle&&isAdmin" class="btn btn-success btn-sm" style="width:auto" @click="retourner(e.id)">Retour</button></td></tr></tbody></table></div>
+</section>
 
+<!-- RETARDS -->
+<section v-if="pg==='retards'">
+<div class="page-header fade-up"><div><h2>Retards</h2><p>Livres non retournés à la date prévue</p></div></div>
+<div class="card fade-up d2"><div class="card-header"><h3>Emprunts en retard</h3></div>
+<div v-if="rLoad" class="loader">Chargement</div>
+<div v-else-if="rets.length===0" class="empty"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" style="margin:0 auto 8px;display:block"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><p>Aucun retard en ce moment</p></div>
+<table v-else><thead><tr><th>#</th><th>Membre</th><th>Livre</th><th>Date emprunt</th><th>Date prévue</th><th>Retard</th><th>Action</th></tr></thead>
+<tbody><tr v-for="e in rets" :key="e.id"><td>{{ e.id }}</td><td><strong>{{ e._m }}</strong></td><td>{{ e._l }}</td><td>{{ e.date_emprunt }}</td><td>{{ e.date_retour_prevue }}</td><td><span class="badge badge-red"><span class="badge-dot"></span>+{{ jR(e) }}j</span></td><td><button v-if="!e.date_retour_reelle&&isAdmin" class="btn btn-success btn-sm" style="width:auto" @click="retourner(e.id)">Retour</button></td></tr></tbody></table></div>
+</section>
 </main>
-
-<!-- MODAL : Ajouter un livre -->
-<div class="overlay" id="modal-livre">
-  <div class="modal">
-    <h3>Ajouter un livre</h3>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Titre *</label>
-        <input type="text" id="l-titre" placeholder="ex : Les Misérables">
-      </div>
-      <div class="form-group">
-        <label>Auteur *</label>
-        <input type="text" id="l-auteur" placeholder="ex : Victor Hugo">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>ISBN *</label>
-        <input type="text" id="l-isbn" placeholder="ex : 978-2-07-036024-4">
-      </div>
-      <div class="form-group">
-        <label>Annee</label>
-        <input type="number" id="l-annee" placeholder="ex : 2020">
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Genre</label>
-      <input type="text" id="l-genre" placeholder="ex : Roman, Informatique...">
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('modal-livre')">Annuler</button>
-      <button class="btn btn-primary" onclick="ajouterLivre()">Ajouter</button>
-    </div>
-  </div>
 </div>
+</template>
 
-<!-- MODAL : Ajouter un utilisateur -->
-<div class="overlay" id="modal-utilisateur">
-  <div class="modal">
-    <h3>Inscrire un membre</h3>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Nom *</label>
-        <input type="text" id="u-nom" placeholder="ex : Diallo">
-      </div>
-      <div class="form-group">
-        <label>Prenom *</label>
-        <input type="text" id="u-prenom" placeholder="ex : Amadou">
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Email *</label>
-      <input type="email" id="u-email" placeholder="ex : amadou@dit.sn">
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Telephone</label>
-        <input type="text" id="u-telephone" placeholder="ex : +221 77 000 00 00">
-      </div>
-      <div class="form-group">
-        <label>Matricule *</label>
-        <input type="text" id="u-matricule" placeholder="ex : ETU-2024-001">
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Type de membre *</label>
-      <select id="u-type">
-        <option value="etudiant">Étudiant</option>
-        <option value="professeur">Professeur</option>
-        <option value="personnel_administratif">Personnel administratif</option>
-      </select>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('modal-utilisateur')">Annuler</button>
-      <button class="btn btn-primary" onclick="ajouterUtilisateur()">Inscrire</button>
-    </div>
-  </div>
+<!-- MODALS -->
+<div class="overlay" v-if="modal==='livre'" @click.self="modal=null"><div class="modal"><h3>{{ mL.id?'Modifier':'Ajouter' }} un livre</h3>
+<div class="form-group"><label class="form-label">Titre *</label><input class="form-input" v-model="mL.titre"></div>
+<div class="form-group"><label class="form-label">Auteur *</label><input class="form-input" v-model="mL.auteur"></div>
+<div class="form-group"><label class="form-label">ISBN *</label><input class="form-input" v-model="mL.isbn"></div>
+<div class="form-row"><div class="form-group"><label class="form-label">Année</label><input class="form-input" v-model.number="mL.annee" type="number"></div><div class="form-group"><label class="form-label">Genre</label><input class="form-input" v-model="mL.genre"></div></div>
+<div class="modal-actions"><button class="btn btn-ghost" @click="modal=null">Annuler</button><button class="btn btn-dit" style="width:auto" @click="sLivre">Enregistrer</button></div></div></div>
+
+<div class="overlay" v-if="modal==='user'" @click.self="modal=null"><div class="modal"><h3>{{ mU.id?'Modifier':'Ajouter' }} un membre</h3>
+<div class="form-row"><div class="form-group"><label class="form-label">Nom *</label><input class="form-input" v-model="mU.nom"></div><div class="form-group"><label class="form-label">Prénom *</label><input class="form-input" v-model="mU.prenom"></div></div>
+<div class="form-group"><label class="form-label">Email *</label><input class="form-input" v-model="mU.email" type="email"></div>
+<div class="form-group" v-if="!mU.id"><label class="form-label">Mot de passe temporaire *</label><input class="form-input" v-model="mU.mot_de_passe_temp" type="text" placeholder="Ex: TempDIT2026"><div class="form-hint">L'utilisateur devra le changer à sa première connexion</div></div>
+<div class="form-row"><div class="form-group"><label class="form-label">Téléphone</label><input class="form-input" v-model="mU.telephone"></div><div class="form-group"><label class="form-label">Type</label><select class="form-select" v-model="mU.type"><option value="etudiant">Étudiant</option><option value="professeur">Professeur</option><option value="personnel_administratif">Personnel admin.</option></select></div></div>
+<div class="form-group" v-if="mU.type==='etudiant'"><label class="form-label">Matricule *</label><input class="form-input" v-model="mU.matricule" placeholder="Ex: NE2510081"></div>
+<div class="form-row" v-if="mU.type!=='etudiant'"><div class="form-group"><label class="form-label">Type pièce</label><select class="form-select" v-model="mU.piece_identite_type"><option value="CNI">CNI</option><option value="Passeport">Passeport</option><option value="Autre">Autre</option></select></div><div class="form-group"><label class="form-label">N° Pièce</label><input class="form-input" v-model="mU.piece_identite_numero"></div></div>
+<div class="modal-actions"><button class="btn btn-ghost" @click="modal=null">Annuler</button><button class="btn btn-dit" style="width:auto" @click="sUser">Enregistrer</button></div></div></div>
+
+<div class="overlay" v-if="modal==='emprunt'" @click.self="modal=null"><div class="modal"><h3>Nouvel emprunt</h3>
+<div class="form-group"><label class="form-label">Membre</label><select class="form-select" v-model.number="mE.utilisateur_id"><option :value="null" disabled>— Sélectionner un membre —</option><option v-for="u in usrs" :key="u.id" :value="u.id">{{ u.prenom }} {{ u.nom }} ({{ u.email }})</option></select></div>
+<div class="form-group"><label class="form-label">Livre (disponible)</label><select class="form-select" v-model.number="mE.livre_id"><option :value="null" disabled>— Sélectionner un livre —</option><option v-for="l in livresDispo" :key="l.id" :value="l.id">{{ l.titre }} — {{ l.auteur }}</option></select></div>
+<div class="form-group"><label class="form-label">Date retour prévue</label><input class="form-input" v-model="mE.date_retour_prevue" type="date" :min="tISO"></div>
+<div class="modal-actions"><button class="btn btn-ghost" @click="modal=null">Annuler</button><button class="btn btn-dit" style="width:auto" @click="sEmp">Enregistrer l'emprunt</button></div></div></div>
+
+<div class="toast-container"><div v-for="t in toasts" :key="t.id" class="toast" :class="t.type">{{ t.msg }}</div></div>
 </div>
-
-<!-- MODAL : Nouvel emprunt -->
-<div class="overlay" id="modal-emprunt">
-  <div class="modal">
-    <h3>Enregistrer un emprunt</h3>
-    <div class="form-group">
-      <label>ID Utilisateur *</label>
-      <input type="number" id="e-utilisateur" placeholder="ex : 1">
-    </div>
-    <div class="form-group">
-      <label>ID Livre *</label>
-      <input type="number" id="e-livre" placeholder="ex : 5">
-    </div>
-    <div class="form-group">
-      <label>Date de retour prévue</label>
-      <input type="date" id="e-retour">
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('modal-emprunt')">Annuler</button>
-      <button class="btn btn-primary" onclick="creerEmprunt()">Enregistrer</button>
-    </div>
-  </div>
-</div>
-
-
-
-<!-- MODAL : Profil utilisateur -->
-<div class="overlay" id="modal-profil-utilisateur">
-  <div class="modal">
-    <h3>Profil du membre</h3>
-    <div class="form-group">
-      <label>Nom complet</label>
-      <input type="text" id="profil-nom" disabled style="background:var(--light);color:var(--navy);">
-    </div>
-    <div class="form-group">
-      <label>Email</label>
-      <input type="text" id="profil-email" disabled style="background:var(--light);color:var(--navy);">
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Téléphone</label>
-        <input type="text" id="profil-telephone" disabled style="background:var(--light);color:var(--navy);">
-      </div>
-      <div class="form-group">
-        <label>Matricule</label>
-        <input type="text" id="profil-matricule" disabled style="background:var(--light);color:var(--navy);">
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Type de membre</label>
-      <input type="text" id="profil-type" disabled style="background:var(--light);color:var(--navy);">
-    </div>
-    <div class="form-group">
-      <label>Historique des emprunts</label>
-      <div id="profil-emprunts" style="font-size:13px;color:var(--muted);padding:8px 0;">Chargement...</div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('modal-profil-utilisateur')">Fermer</button>
-    </div>
-  </div>
-</div>
-<!-- MODAL : Modifier un livre -->
-<div class="overlay" id="modal-modifier-livre">
-  <div class="modal">
-    <h3>Modifier un livre</h3>
-    <input type="hidden" id="ml-id">
-    <div class="form-row">
-      <div class="form-group">
-        <label>Titre *</label>
-        <input type="text" id="ml-titre">
-      </div>
-      <div class="form-group">
-        <label>Auteur *</label>
-        <input type="text" id="ml-auteur">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>ISBN *</label>
-        <input type="text" id="ml-isbn">
-      </div>
-      <div class="form-group">
-        <label>Année</label>
-        <input type="number" id="ml-annee">
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Genre</label>
-      <input type="text" id="ml-genre">
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('modal-modifier-livre')">Annuler</button>
-      <button class="btn btn-primary" onclick="modifierLivre()">Enregistrer</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL : Modifier un utilisateur -->
-<div class="overlay" id="modal-modifier-utilisateur">
-  <div class="modal">
-    <h3>Modifier un membre</h3>
-    <input type="hidden" id="mu-id">
-    <div class="form-row">
-      <div class="form-group">
-        <label>Nom *</label>
-        <input type="text" id="mu-nom">
-      </div>
-      <div class="form-group">
-        <label>Prénom *</label>
-        <input type="text" id="mu-prenom">
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Email *</label>
-      <input type="email" id="mu-email">
-    </div>
-    <div class="form-group">
-      <label>Téléphone</label>
-      <input type="text" id="mu-telephone">
-    </div>
-    <div class="form-group">
-      <label>Type de membre *</label>
-      <select id="mu-type">
-        <option value="etudiant">Étudiant</option>
-        <option value="professeur">Professeur</option>
-        <option value="personnel_administratif">Personnel administratif</option>
-      </select>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('modal-modifier-utilisateur')">Annuler</button>
-      <button class="btn btn-primary" onclick="modifierUtilisateur()">Enregistrer</button>
-    </div>
-  </div>
-</div>
-<!-- Toast -->
-<div id="toast"></div>
 
 <script>
-  const API = {
-    livres:       'http://localhost:8001',
-    utilisateurs: 'http://localhost:8002',
-    emprunts:     'http://localhost:8003',
-  };
+const LOGO="data:image/svg+xml;base64,"+btoa(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400"><defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#014955"/><stop offset="100%" stop-color="#026d7e"/></linearGradient></defs><rect width="400" height="400" rx="48" fill="url(#bg)"/><g transform="translate(200,155)" text-anchor="middle"><text font-family="Arial,Helvetica,sans-serif" font-weight="900" font-size="150" fill="#ffffff" dy="0.35em" letter-spacing="-4">DIT</text></g><rect x="55" y="250" width="290" height="3" rx="1.5" fill="rgba(255,255,255,0.2)"/><g transform="translate(200,295)" text-anchor="middle"><text font-family="Arial,Helvetica,sans-serif" font-weight="600" font-size="23" fill="rgba(255,255,255,0.65)" letter-spacing="7">DAKAR INSTITUTE</text></g><g transform="translate(200,330)" text-anchor="middle"><text font-family="Arial,Helvetica,sans-serif" font-weight="600" font-size="23" fill="rgba(255,255,255,0.65)" letter-spacing="7">OF TECHNOLOGY</text></g></svg>`);
+const{createApp,ref,reactive,computed,onMounted}=Vue;
+const P={livres:8001,utilisateurs:8002,emprunts:8003};
+function bUrl(s){const l=window.location;return`${l.protocol}//${l.hostname}:${P[s]}`}
+async function api(s,p,m='GET',b=null){const o={method:m,headers:{'Content-Type':'application/json'}};if(b)o.body=JSON.stringify(b);const r=await fetch(bUrl(s)+p,o);if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.detail||`Erreur ${r.status}`)}if(r.status===204)return null;return r.json()}
 
-  let tousLesLivres = [];
-  let livresData = {}; // cache id -> objet livre
+createApp({setup(){
+const logoSrc=ref(LOGO),user=ref(null),token=ref(null),pg=ref('dashboard'),sidebarOpen=ref(false),modal=ref(null),toasts=ref([]),forgotMode=ref(false);let tid=0;
+const authMode=ref('login'),authError=ref(''),authLoading=ref(false);
+const loginForm=reactive({email:'',mot_de_passe:''});
+const regForm=reactive({nom:'',prenom:'',email:'',mot_de_passe:'',confirm_mdp:'',telephone:'',type:'etudiant',matricule:'',piece_identite_type:'CNI',piece_identite_numero:''});
+const livres=ref([]),usrs=ref([]),emps=ref([]),rets=ref([]);
+const lLoad=ref(false),uLoad=ref(false),eLoad=ref(false),rLoad=ref(false);
+const eF=ref('en-cours'),lQ=ref('');
+const ds=reactive({livres:0,membres:0,enCours:0,retards:0});
+const acts=ref([]);
+const mL=reactive({id:null,titre:'',auteur:'',isbn:'',annee:null,genre:''});
+const mU=reactive({id:null,nom:'',prenom:'',email:'',telephone:'',type:'etudiant',matricule:'',piece_identite_type:'CNI',piece_identite_numero:'',mot_de_passe_temp:''});
+const mE=reactive({utilisateur_id:null,livre_id:null,date_retour_prevue:''});
+const retC=computed(()=>rets.value.length);
+const tISO=computed(()=>new Date().toISOString().split('T')[0]);
+const fDate=computed(()=>new Date().toLocaleDateString('fr-FR',{weekday:'long',year:'numeric',month:'long',day:'numeric'}));
+const isAdmin=computed(()=>user.value?.role==='admin');
+const uInit=computed(()=>user.value?((user.value.prenom?.[0]||'')+(user.value.nom?.[0]||'')).toUpperCase():'');
+const roleLabel=computed(()=>{if(!user.value)return '';if(user.value.role==='admin')return 'Administrateur DIT';const m={etudiant:'Étudiant DIT',professeur:'Enseignant DIT',personnel_administratif:'Personnel DIT'};return m[user.value.type]||'Membre DIT'});
+const lS=computed(()=>{const t=livres.value.length,d=livres.value.filter(l=>l.disponible).length;return{total:t,dispo:d,emp:t-d}});
+const fLiv=computed(()=>{const q=lQ.value.toLowerCase();if(!q)return livres.value;return livres.value.filter(l=>(l.titre||'').toLowerCase().includes(q)||(l.auteur||'').toLowerCase().includes(q)||(l.isbn||'').toLowerCase().includes(q))});
+const fLivDispo=computed(()=>{const q=lQ.value.toLowerCase();let list=livres.value.filter(l=>l.disponible);if(q)list=list.filter(l=>(l.titre||'').toLowerCase().includes(q)||(l.auteur||'').toLowerCase().includes(q));return list});
+const myEmps=ref([]),myEmpsLoading=ref(false),myStats=reactive({dispo:0,mesEnCours:0,mesRetards:0});
+function isOverdue(e){return !e.date_retour_reelle && new Date(e.date_retour_prevue)<new Date()}
+const livresDispo=computed(()=>livres.value.filter(l=>l.disponible));
+async function openEmpruntModal(){Object.assign(mE,{utilisateur_id:null,livre_id:null,date_retour_prevue:''});try{await Promise.all([ldLiv(),ldUsr()])}catch(e){}modal.value='emprunt'}
 
-  // NAVIGATION
-  function showPage(page) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
-    document.getElementById('page-' + page).classList.add('active');
-    document.getElementById('nav-' + page).classList.add('active');
-    if (page === 'livres')       chargerLivres();
-    if (page === 'utilisateurs') chargerUtilisateurs();
-    if (page === 'emprunts')     chargerEmprunts('en-cours');
-    if (page === 'retards')      chargerRetards();
-  }
+function toast(m,t='success'){const id=++tid;toasts.value.push({id,msg:m,type:t});setTimeout(()=>{toasts.value=toasts.value.filter(x=>x.id!==id)},3500)}
+function tLabel(t){return{etudiant:'Étudiant',professeur:'Professeur',personnel_administratif:'Personnel admin.'}[t]||t}
+function go(p){pg.value=p;sidebarOpen.value=false;if(p==='dashboard')ldDash();else if(p==='livres')ldLiv();else if(p==='utilisateurs')ldUsr();else if(p==='emprunts')ldEmp(eF.value);else if(p==='retards')ldRet()}
 
-  // TOAST
-  function toast(msg, type = 'success') {
-    const el = document.getElementById('toast');
-    el.textContent = msg;
-    el.className = `show ${type}`;
-    setTimeout(() => el.className = '', 3000);
-  }
+async function doLogin(){authLoading.value=true;authError.value='';try{const r=await api('utilisateurs','/auth/login','POST',{email:loginForm.email,mot_de_passe:loginForm.mot_de_passe});token.value=r.access_token;user.value=r.user;localStorage.setItem('bt',r.access_token);localStorage.setItem('bu',JSON.stringify(r.user));ldDash()}catch(e){authError.value=e.message}finally{authLoading.value=false}}
+async function doRegister(){if(regForm.mot_de_passe!==regForm.confirm_mdp){authError.value='Les mots de passe ne correspondent pas';return}authLoading.value=true;authError.value='';try{const b={...regForm};delete b.confirm_mdp;if(b.type==='etudiant'){if(!b.matricule){authError.value='Le matricule est obligatoire';authLoading.value=false;return}b.piece_identite_type=null;b.piece_identite_numero=null}else{b.matricule=null}const r=await api('utilisateurs','/auth/register','POST',b);token.value=r.access_token;user.value=r.user;localStorage.setItem('bt',r.access_token);localStorage.setItem('bu',JSON.stringify(r.user));ldDash()}catch(e){authError.value=e.message}finally{authLoading.value=false}}
+function logout(){user.value=null;token.value=null;localStorage.removeItem('bt');localStorage.removeItem('bu')}
 
-  // MODALS
-  function openModal(id)  { document.getElementById(id).classList.add('open'); }
-  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+async function ldLiv(){lLoad.value=true;try{livres.value=await api('livres','/livres')}catch(e){toast(e.message,'error')}finally{lLoad.value=false}}
+async function ldUsr(){uLoad.value=true;try{usrs.value=await api('utilisateurs','/utilisateurs')}catch(e){toast(e.message,'error')}finally{uLoad.value=false}}
+async function enrich(l){const uI=[...new Set(l.map(e=>e.utilisateur_id))],lI=[...new Set(l.map(e=>e.livre_id))];const us=await Promise.all(uI.map(i=>api('utilisateurs',`/utilisateurs/${i}`).catch(()=>null))),bs=await Promise.all(lI.map(i=>api('livres',`/livres/${i}`).catch(()=>null)));const uM={},lM={};uI.forEach((i,j)=>{if(us[j])uM[i]=`${us[j].prenom} ${us[j].nom}`});lI.forEach((i,j)=>{if(bs[j])lM[i]=bs[j].titre});return l.map(e=>({...e,_m:uM[e.utilisateur_id]||`#${e.utilisateur_id}`,_l:lM[e.livre_id]||`#${e.livre_id}`}))}
+async function ldEmp(f='en-cours'){eF.value=f;eLoad.value=true;try{const p=f==='en-cours'?'/emprunts/en-cours':'/emprunts';emps.value=await enrich(await api('emprunts',p))}catch(e){toast(e.message,'error')}finally{eLoad.value=false}}
+async function ldRet(){rLoad.value=true;try{rets.value=await enrich(await api('emprunts','/emprunts/retards'))}catch(e){toast(e.message,'error')}finally{rLoad.value=false}}
+function jR(e){const r=e.date_retour_reelle?new Date(e.date_retour_reelle):new Date(),p=new Date(e.date_retour_prevue);return Math.max(0,Math.floor((r-p)/864e5))}
+async function retourner(id){if(!confirm('Confirmer le retour ?'))return;try{await api('emprunts',`/emprunts/${id}/retour`,'PUT');toast('Retour enregistré');pg.value==='retards'?ldRet():ldEmp(eF.value)}catch(e){toast(e.message,'error')}}
+async function ldDash(){try{const b=await api('livres','/livres').catch(()=>[]);livres.value=b;if(isAdmin.value){const[u,c,r]=await Promise.all([api('utilisateurs','/utilisateurs').catch(()=>[]),api('emprunts','/emprunts/en-cours').catch(()=>[]),api('emprunts','/emprunts/retards').catch(()=>[])]);usrs.value=u;rets.value=r;ds.livres=b.length;ds.membres=u.length;ds.enCours=c.length;ds.retards=r.length;const a=[];const ec=await enrich(c.slice(0,5));ec.forEach(e=>a.push({text:`<strong>${e._m}</strong> a emprunté <strong>${e._l}</strong>`,time:e.date_emprunt,color:'dit'}));if(r.length){const er=await enrich(r.slice(0,3));er.forEach(e=>a.push({text:`<strong>${e._m}</strong> en retard pour <strong>${e._l}</strong>`,time:`Prévu le ${e.date_retour_prevue}`,color:'red'}))}b.slice(-3).reverse().forEach(l=>a.push({text:`Livre : <strong>${l.titre}</strong>`,time:l.genre||'Catalogue',color:'green'}));acts.value=a}else{myEmpsLoading.value=true;try{const uid=user.value.id;let myData=[];try{myData=await api('emprunts',`/emprunts/utilisateur/${uid}`)}catch(e){myData=(await api('emprunts','/emprunts/en-cours').catch(()=>[])).filter(x=>x.utilisateur_id===uid)}const enCours=myData.filter(e=>!e.date_retour_reelle);const retards=enCours.filter(e=>new Date(e.date_retour_prevue)<new Date());myEmps.value=await enrich(enCours);myStats.dispo=b.filter(l=>l.disponible).length;myStats.mesEnCours=enCours.length;myStats.mesRetards=retards.length;rets.value=await enrich(retards)}finally{myEmpsLoading.value=false}}}catch(e){}}
 
-  // API HELPER
-  async function api(service, path, method = 'GET', body = null) {
-    const opts = { method, headers: { 'Content-Type': 'application/json' } };
-    if (body) opts.body = JSON.stringify(body);
-    const res = await fetch(API[service] + path, opts);
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.detail || `Erreur ${res.status}`);
-    }
-    if (res.status === 204) return null;
-    return res.json();
-  }
+function eLivre(l){Object.assign(mL,{id:l.id,titre:l.titre,auteur:l.auteur,isbn:l.isbn,annee:l.annee,genre:l.genre});modal.value='livre'}
+async function sLivre(){if(!mL.titre||!mL.auteur||!mL.isbn)return toast('Champs requis','error');try{if(mL.id){const{id,...b}=mL;await api('livres',`/livres/${id}`,'PUT',{...b,annee:b.annee||null,genre:b.genre||null})}else{await api('livres','/livres','POST',{...mL,annee:mL.annee||null,genre:mL.genre||null})}modal.value=null;toast(mL.id?'Modifié':'Ajouté');Object.assign(mL,{id:null,titre:'',auteur:'',isbn:'',annee:null,genre:''});ldLiv()}catch(e){toast(e.message,'error')}}
+async function dLivre(id){if(!confirm('Supprimer ?'))return;try{await api('livres',`/livres/${id}`,'DELETE');toast('Supprimé');ldLiv()}catch(e){toast(e.message,'error')}}
 
-  // SVG icones simples pour les etats vides
-  const iconBook    = `<svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>`;
-  const iconUserBtn = `<svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>`;
-  const iconUser    = `<svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>`;
-  const iconList    = `<svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>`;
-  const iconCheck   = `<svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
-  const iconWarning = `<svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>`;
-  const iconEdit = `<svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>`;
-  const iconTrash   = `<svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>`;
+function eUser(u){Object.assign(mU,{id:u.id,nom:u.nom,prenom:u.prenom,email:u.email,telephone:u.telephone||'',type:u.type,matricule:u.matricule||'',piece_identite_type:u.piece_identite_type||'CNI',piece_identite_numero:u.piece_identite_numero||'',mot_de_passe_temp:''});modal.value='user'}
+async function sUser(){if(!mU.nom||!mU.prenom||!mU.email)return toast('Champs requis','error');try{const b={nom:mU.nom,prenom:mU.prenom,email:mU.email,telephone:mU.telephone||null,type:mU.type,matricule:mU.type==='etudiant'?mU.matricule:null,piece_identite_type:mU.type!=='etudiant'?mU.piece_identite_type:null,piece_identite_numero:mU.type!=='etudiant'?mU.piece_identite_numero:null};if(mU.type==='etudiant'&&!mU.matricule)return toast('Le matricule est obligatoire pour les étudiants','error');if(mU.id){await api('utilisateurs',`/utilisateurs/${mU.id}`,'PUT',b);toast('Modifié')}else{if(!mU.mot_de_passe_temp)return toast('Mot de passe temporaire requis','error');b.mot_de_passe=mU.mot_de_passe_temp;b.role='membre';await api('utilisateurs','/utilisateurs','POST',b);toast('Utilisateur ajouté avec mot de passe temporaire')}modal.value=null;ldUsr()}catch(e){toast(e.message,'error')}}
+async function dUser(id){if(!confirm('Supprimer ?'))return;try{await api('utilisateurs',`/utilisateurs/${id}`,'DELETE');toast('Supprimé');ldUsr()}catch(e){toast(e.message,'error')}}
 
-  // LIVRES
-  async function chargerLivres() {
-    try {
-      tousLesLivres = await api('livres', '/livres');
-      tousLesLivres.forEach(l => livresData[l.id] = l);
-      afficherLivres(tousLesLivres);
-      mettreAJourStats(tousLesLivres);
-    } catch(e) {
-      document.getElementById('table-livres').innerHTML =
-        `<div class="empty">${iconWarning}<p>${e.message}</p></div>`;
-    }
-  }
+async function sEmp(){if(!mE.utilisateur_id||!mE.livre_id)return toast('Sélectionnez un membre et un livre','error');try{await api('emprunts','/emprunts','POST',{utilisateur_id:mE.utilisateur_id,livre_id:mE.livre_id,date_retour_prevue:mE.date_retour_prevue||null});modal.value=null;toast('Emprunt enregistré');Object.assign(mE,{utilisateur_id:null,livre_id:null,date_retour_prevue:''});ldEmp('en-cours');ldLiv()}catch(e){toast(e.message,'error')}}
 
-  function mettreAJourStats(livres) {
-    const dispo = livres.filter(l => l.disponible).length;
-    document.getElementById('stat-total').textContent     = livres.length;
-    document.getElementById('stat-dispo').textContent     = dispo;
-    document.getElementById('stat-empruntes').textContent = livres.length - dispo;
-  }
+onMounted(()=>{const t=localStorage.getItem('bt'),u=localStorage.getItem('bu');if(t&&u){token.value=t;user.value=JSON.parse(u);ldDash()}});
 
-  function filtrerLivres(terme) {
-    const t = terme.toLowerCase();
-    const filtres = tousLesLivres.filter(l =>
-      l.titre.toLowerCase().includes(t)  ||
-      l.auteur.toLowerCase().includes(t) ||
-      l.isbn.includes(t)
-    );
-    afficherLivres(filtres);
-  }
-
-  function afficherLivres(livres) {
-    if (!livres.length) {
-      document.getElementById('table-livres').innerHTML =
-        `<div class="empty">${iconBook}<p>Aucun livre trouvé</p></div>`;
-      return;
-    }
-    document.getElementById('table-livres').innerHTML = `
-      <table>
-        <thead>
-          <tr><th>#</th><th>Titre</th><th>Auteur</th><th>ISBN</th><th>Genre</th><th>Statut</th><th>Actions</th></tr>
-        </thead>
-        <tbody>
-          ${livres.map(l => `
-            <tr>
-              <td>${l.id}</td>
-              <td><strong>${l.titre}</strong></td>
-              <td>${l.auteur}</td>
-              <td class="mono">${l.isbn}</td>
-              <td>${l.genre || '<span style="color:var(--muted)">—</span>'}</td>
-              <td><span class="badge ${l.disponible ? 'badge-green' : 'badge-red'}">${l.disponible ? 'Disponible' : 'Emprunté'}</span></td>
-              <td>
-                <div class="actions">
-                  <button class="btn btn-ghost btn-sm" onclick="ouvrirModifierLivre(${l.id})">${iconEdit}</button>
-                  <button class="btn btn-ghost btn-sm" onclick="supprimerLivre(${l.id})">${iconTrash}</button>
-                </div>
-              </td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>`;
-  }
-
-  async function ajouterLivre() {
-    const livre = {
-      titre:  document.getElementById('l-titre').value.trim(),
-      auteur: document.getElementById('l-auteur').value.trim(),
-      isbn:   document.getElementById('l-isbn').value.trim(),
-      annee:  parseInt(document.getElementById('l-annee').value) || null,
-      genre:  document.getElementById('l-genre').value.trim() || null,
-    };
-    if (!livre.titre || !livre.auteur || !livre.isbn) {
-      return toast('Titre, auteur et ISBN sont obligatoires', 'error');
-    }
-    try {
-      await api('livres', '/livres', 'POST', livre);
-      closeModal('modal-livre');
-      toast('Livre ajouté avec succès');
-      chargerLivres();
-      ['l-titre','l-auteur','l-isbn','l-annee','l-genre'].forEach(id =>
-        document.getElementById(id).value = '');
-    } catch(e) { toast(e.message, 'error'); }
-  }
-
-  async function supprimerLivre(id) {
-    if (!confirm('Supprimer ce livre ?')) return;
-    try {
-      await api('livres', `/livres/${id}`, 'DELETE');
-      toast('Livre supprimé');
-      chargerLivres();
-    } catch(e) { toast(e.message, 'error'); }
-  }
-
-  // UTILISATEURS
-  async function chargerUtilisateurs() {
-    try {
-      const liste = await api('utilisateurs', '/utilisateurs');
-      const etudiants = liste.filter(u => u.type === 'etudiant').length;
-      const profs     = liste.filter(u => u.type === 'professeur').length;
-      document.getElementById('stat-u-total').textContent    = liste.length;
-      document.getElementById('stat-u-etudiant').textContent = etudiants;
-      document.getElementById('stat-u-prof').textContent     = profs;
-
-      if (!liste.length) {
-        document.getElementById('table-utilisateurs').innerHTML =
-          `<div class="empty">${iconUser}<p>Aucun membre inscrit</p></div>`;
-        return;
-      }
-
-      const typeBadge = {
-        etudiant: 'badge-teal',
-        professeur: 'badge-navy',
-        personnel_administratif: 'badge-amber',
-      };
-      const typeLabel = {
-        etudiant: 'Étudiant',
-        professeur: 'Professeur',
-        personnel_administratif: 'Personnel adm.',
-      };
-
-      document.getElementById('table-utilisateurs').innerHTML = `
-        <table>
-          <thead>
-            <tr><th>#</th><th>Nom complet</th><th>Email</th><th>Matricule</th><th>Type</th><th>Actions</th></tr>
-          </thead>
-          <tbody>
-            ${liste.map(u => `
-              <tr>
-                <td>${u.id}</td>
-                <td><strong>${u.prenom} ${u.nom}</strong></td>
-                <td>${u.email}</td>
-                <td class="mono">${u.matricule}</td>
-                <td><span class="badge ${typeBadge[u.type]}">${typeLabel[u.type]}</span></td>
-                <td>
-                  <div class="actions">
-                    <button class="btn btn-ghost btn-sm" onclick="voirProfil(${u.id})" title="Voir le profil">${iconUserBtn}</button>
-                    <button class="btn btn-ghost btn-sm" onclick="ouvrirModifierUtilisateur(${u.id}, '${u.nom.replace(/'/g, "&#39;")}', '${u.prenom.replace(/'/g, "&#39;")}', '${u.email}', '${u.telephone||''}', '${u.type}')">${iconEdit}</button>
-                    <button class="btn btn-ghost btn-sm" onclick="supprimerUtilisateur(${u.id})">${iconTrash}</button>
-                  </div>
-                </td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>`;
-    } catch(e) {
-      document.getElementById('table-utilisateurs').innerHTML =
-        `<div class="empty">${iconWarning}<p>${e.message}</p></div>`;
-    }
-  }
-
-  async function ajouterUtilisateur() {
-    const u = {
-      nom:       document.getElementById('u-nom').value.trim(),
-      prenom:    document.getElementById('u-prenom').value.trim(),
-      email:     document.getElementById('u-email').value.trim(),
-      telephone: document.getElementById('u-telephone').value.trim() || null,
-      matricule: document.getElementById('u-matricule').value.trim(),
-      type:      document.getElementById('u-type').value,
-    };
-    if (!u.nom || !u.prenom || !u.email || !u.matricule) {
-      return toast('Tous les champs obligatoires doivent être remplis', 'error');
-    }
-    try {
-      await api('utilisateurs', '/utilisateurs', 'POST', u);
-      closeModal('modal-utilisateur');
-      toast('Membre inscrit avec succès');
-      chargerUtilisateurs();
-    } catch(e) { toast(e.message, 'error'); }
-  }
-
-  async function supprimerUtilisateur(id) {
-    if (!confirm('Supprimer ce membre ?')) return;
-    try {
-      await api('utilisateurs', `/utilisateurs/${id}`, 'DELETE');
-      toast('Membre supprimé');
-      chargerUtilisateurs();
-    } catch(e) { toast(e.message, 'error'); }
-  }
-
-  // Récupère noms/titres pour une liste d'emprunts
-  async function enrichirEmprunts(liste) {
-    const userIds  = [...new Set(liste.map(e => e.utilisateur_id))];
-    const livreIds = [...new Set(liste.map(e => e.livre_id))];
-    const [users, livres] = await Promise.all([
-      Promise.all(userIds.map(id  => api('utilisateurs', `/utilisateurs/${id}`).catch(() => null))),
-      Promise.all(livreIds.map(id => api('livres', `/livres/${id}`).catch(() => null))),
-    ]);
-    const userMap = {}, livreMap = {};
-    userIds.forEach((id, i)  => { if (users[i])  userMap[id]  = `${users[i].prenom} ${users[i].nom}`; });
-    livreIds.forEach((id, i) => { if (livres[i]) livreMap[id] = livres[i].titre; });
-    return { userMap, livreMap };
-  }
-
-  // EMPRUNTS
-  async function chargerEmprunts(filtre = 'en-cours') {
-    try {
-      const path = filtre === 'en-cours' ? '/emprunts/en-cours' : '/emprunts';
-      const liste = await api('emprunts', path);
-
-      if (!liste.length) {
-        document.getElementById('table-emprunts').innerHTML =
-          `<div class="empty">${iconList}<p>Aucun emprunt ${filtre === 'en-cours' ? 'en cours' : ''}</p></div>`;
-        return;
-      }
-
-      const { userMap, livreMap } = await enrichirEmprunts(liste);
-
-      document.getElementById('table-emprunts').innerHTML = `
-        <table>
-          <thead>
-            <tr>
-              <th>#</th><th>Membre</th><th>Livre</th>
-              <th>Emprunté le</th><th>Retour prévu</th><th>Retour réel</th>
-              <th>Statut</th><th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${liste.map(e => {
-              const rendu  = !!e.date_retour_reelle;
-              const membre = userMap[e.utilisateur_id]  || `Membre #${e.utilisateur_id}`;
-              const titre  = livreMap[e.livre_id]       || `Livre #${e.livre_id}`;
-              const statut = rendu
-                ? (e.retard ? `<span class="badge badge-amber">Rendu en retard</span>`
-                            : `<span class="badge badge-green">Rendu à temps</span>`)
-                : `<span class="badge badge-teal">En cours</span>`;
-              return `
-                <tr>
-                  <td>${e.id}</td>
-                  <td><strong>${membre}</strong></td>
-                  <td>${titre}</td>
-                  <td>${e.date_emprunt}</td>
-                  <td>${e.date_retour_prevue}</td>
-                  <td>${e.date_retour_reelle || '<span style="color:var(--muted)">—</span>'}</td>
-                  <td>${statut}</td>
-                  <td>${!rendu ? `<button class="btn btn-amber btn-sm" onclick="retournerLivre(${e.id})">Retour</button>` : ''}</td>
-                </tr>`;
-            }).join('')}
-          </tbody>
-        </table>`;
-    } catch(e) {
-      document.getElementById('table-emprunts').innerHTML =
-        `<div class="empty">${iconWarning}<p>${e.message}</p></div>`;
-    }
-  }
-
-  async function creerEmprunt() {
-    const body = {
-      utilisateur_id:     parseInt(document.getElementById('e-utilisateur').value),
-      livre_id:           parseInt(document.getElementById('e-livre').value),
-      date_retour_prevue: document.getElementById('e-retour').value || null,
-    };
-    if (!body.utilisateur_id || !body.livre_id) {
-      return toast('ID utilisateur et ID livre sont obligatoires', 'error');
-    }
-    try {
-      await api('emprunts', '/emprunts', 'POST', body);
-      closeModal('modal-emprunt');
-      toast('Emprunt enregistré');
-      chargerEmprunts('en-cours');
-    } catch(e) { toast(e.message, 'error'); }
-  }
-
-  async function retournerLivre(empruntId) {
-    if (!confirm('Confirmer le retour de ce livre ?')) return;
-    try {
-      await api('emprunts', `/emprunts/${empruntId}/retour`, 'PUT');
-      toast('Retour enregistré');
-      chargerEmprunts('en-cours');
-    } catch(e) { toast(e.message, 'error'); }
-  }
-
-  // RETARDS
-  async function chargerRetards() {
-    try {
-      const liste = await api('emprunts', '/emprunts/retards');
-      if (!liste.length) {
-        document.getElementById('table-retards').innerHTML =
-          `<div class="empty">${iconCheck}<p>Aucun retard en ce moment</p></div>`;
-        return;
-      }
-
-      const { userMap, livreMap } = await enrichirEmprunts(liste);
-
-      document.getElementById('table-retards').innerHTML = `
-        <table>
-          <thead>
-            <tr>
-              <th>#</th><th>Membre</th><th>Livre</th>
-              <th>Date emprunt</th><th>Date prévue</th><th>Jours de retard</th><th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${liste.map(e => {
-              const dateRef  = e.date_retour_reelle ? new Date(e.date_retour_reelle) : new Date();
-              const prevue   = new Date(e.date_retour_prevue);
-              const jours    = Math.max(0, Math.floor((dateRef - prevue) / 86400000));
-              const membre = userMap[e.utilisateur_id] || `Membre #${e.utilisateur_id}`;
-              const titre  = livreMap[e.livre_id]      || `Livre #${e.livre_id}`;
-              return `
-                <tr>
-                  <td>${e.id}</td>
-                  <td><strong>${membre}</strong></td>
-                  <td>${titre}</td>
-                  <td>${e.date_emprunt}</td>
-                  <td>${e.date_retour_prevue}</td>
-                  <td><span class="badge badge-red">+${jours} jour(s)</span></td>
-                  <td>${!e.date_retour_reelle ? `<button class="btn btn-amber btn-sm" onclick="retournerLivre(${e.id})">Retour</button>` : ''}</td>
-                </tr>`;
-            }).join('')}
-          </tbody>
-        </table>`;
-    } catch(e) {
-      document.getElementById('table-retards').innerHTML =
-        `<div class="empty">${iconWarning}<p>${e.message}</p></div>`;
-    }
-  }
-
-
-
-  // PROFIL UTILISATEUR
-  async function voirProfil(id) {
-    openModal('modal-profil-utilisateur');
-    try {
-      const u = await api('utilisateurs', `/utilisateurs/${id}`);
-      const typeLabel = {
-        'ETUDIANT': 'Étudiant',
-        'PROFESSEUR': 'Professeur',
-        'PERSONNEL_ADMINISTRATIF': 'Personnel administratif',
-        'etudiant': 'Étudiant',
-        'professeur': 'Professeur',
-        'personnel_administratif': 'Personnel administratif',
-      };
-      document.getElementById('profil-nom').value       = `${u.prenom} ${u.nom}`;
-      document.getElementById('profil-email').value     = u.email;
-      document.getElementById('profil-telephone').value = u.telephone || '-';
-      document.getElementById('profil-matricule').value = u.matricule;
-      document.getElementById('profil-type').value      = typeLabel[u.type] || u.type;
-
-      // Charger l'historique des emprunts du membre
-      const emprunts = await api('emprunts', `/emprunts/utilisateur/${id}`);
-      if (!emprunts.length) {
-        document.getElementById('profil-emprunts').innerHTML = 'Aucun emprunt enregistré.';
-      } else {
-        const livreIds = [...new Set(emprunts.map(e => e.livre_id))];
-        const livres = await Promise.all(livreIds.map(lid => api('livres', `/livres/${lid}`).catch(() => null)));
-        const livreMap = {};
-        livreIds.forEach((lid, i) => { if (livres[i]) livreMap[lid] = livres[i].titre; });
-        document.getElementById('profil-emprunts').innerHTML = emprunts.map(e => {
-          const titre  = livreMap[e.livre_id] || `Livre #${e.livre_id}`;
-          const statut = e.date_retour_reelle
-            ? `<span class="badge badge-green">Rendu</span>`
-            : `<span class="badge badge-teal">En cours</span>`;
-          return `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);">
-            <span>${titre}</span>
-            <span style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);">
-              ${e.date_emprunt} ${statut}
-            </span>
-          </div>`;
-        }).join('');
-      }
-    } catch(e) {
-      document.getElementById('profil-emprunts').innerHTML = `Erreur : ${e.message}`;
-    }
-  }
-
-  // MODIFIER LIVRE
-  function ouvrirModifierLivre(id) {
-    const l = livresData[id];
-    if (!l) return;
-    document.getElementById('ml-id').value     = l.id;
-    document.getElementById('ml-titre').value  = l.titre;
-    document.getElementById('ml-auteur').value = l.auteur;
-    document.getElementById('ml-isbn').value   = l.isbn;
-    document.getElementById('ml-annee').value  = l.annee || '';
-    document.getElementById('ml-genre').value  = l.genre || '';
-    openModal('modal-modifier-livre');
-  }
-
-  async function modifierLivre() {
-    const id = document.getElementById('ml-id').value;
-    const body = {
-      titre:  document.getElementById('ml-titre').value.trim(),
-      auteur: document.getElementById('ml-auteur').value.trim(),
-      isbn:   document.getElementById('ml-isbn').value.trim(),
-      annee:  parseInt(document.getElementById('ml-annee').value) || null,
-      genre:  document.getElementById('ml-genre').value.trim() || null,
-    };
-    if (!body.titre || !body.auteur || !body.isbn) {
-      return toast('Titre, auteur et ISBN sont obligatoires', 'error');
-    }
-    try {
-      await api('livres', `/livres/${id}`, 'PUT', body);
-      closeModal('modal-modifier-livre');
-      toast('Livre modifié avec succès');
-      chargerLivres();
-    } catch(e) { toast(e.message, 'error'); }
-  }
-
-  // MODIFIER UTILISATEUR
-  function ouvrirModifierUtilisateur(id, nom, prenom, email, telephone, type) {
-    document.getElementById('mu-id').value        = id;
-    document.getElementById('mu-nom').value       = nom;
-    document.getElementById('mu-prenom').value    = prenom;
-    document.getElementById('mu-email').value     = email;
-    document.getElementById('mu-telephone').value = telephone || '';
-    document.getElementById('mu-type').value      = type;
-    openModal('modal-modifier-utilisateur');
-  }
-
-  async function modifierUtilisateur() {
-    const id = document.getElementById('mu-id').value;
-    const body = {
-      nom:       document.getElementById('mu-nom').value.trim(),
-      prenom:    document.getElementById('mu-prenom').value.trim(),
-      email:     document.getElementById('mu-email').value.trim(),
-      telephone: document.getElementById('mu-telephone').value.trim() || null,
-      type:      document.getElementById('mu-type').value,
-    };
-    if (!body.nom || !body.prenom || !body.email) {
-      return toast('Nom, prénom et email sont obligatoires', 'error');
-    }
-    try {
-      await api('utilisateurs', `/utilisateurs/${id}`, 'PUT', body);
-      closeModal('modal-modifier-utilisateur');
-      toast('Membre modifié avec succès');
-      chargerUtilisateurs();
-    } catch(e) { toast(e.message, 'error'); }
-  }
-
-  // Chargement initial
-  chargerLivres();
-
-  // Empêcher la sélection d'une date de retour antérieure à aujourd'hui
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('e-retour').setAttribute('min', today);
+return{logoSrc,user,token,pg,sidebarOpen,modal,toasts,forgotMode,authMode,authError,authLoading,loginForm,regForm,livres,usrs,emps,rets,lLoad,uLoad,eLoad,rLoad,eF,lQ,ds,acts,retC,tISO,fDate,isAdmin,uInit,roleLabel,lS,fLiv,fLivDispo,livresDispo,myEmps,myEmpsLoading,myStats,isOverdue,toast,tLabel,go,doLogin,doRegister,logout,ldLiv,ldUsr,ldEmp,ldRet,jR,retourner,ldDash,eLivre,sLivre,dLivre,eUser,sUser,dUser,mL,mU,mE,sEmp,openEmpruntModal}
+}}).mount('#app');
 </script>
 </body>
 </html>

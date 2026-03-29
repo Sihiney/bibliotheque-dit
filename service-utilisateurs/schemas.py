@@ -1,36 +1,72 @@
 from pydantic import BaseModel
 from typing import Optional
-from models import TypeUtilisateur
+from datetime import datetime
+from models import TypeUtilisateur, RoleUtilisateur
+
+
+class RegisterRequest(BaseModel):
+    nom: str
+    prenom: str
+    email: str
+    mot_de_passe: str
+    telephone: Optional[str] = None
+    type: TypeUtilisateur
+    matricule: Optional[str] = None
+    piece_identite_type: Optional[str] = None
+    piece_identite_numero: Optional[str] = None
+
+
+class LoginRequest(BaseModel):
+    email: str
+    mot_de_passe: str
+
+
+class LoginResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user: "UtilisateurResponse"
 
 
 class UtilisateurCreate(BaseModel):
-    """Données attendues à la création d'un membre."""
-    nom:       str
-    prenom:    str
-    email:     str
+    nom: str
+    prenom: str
+    email: str
+    mot_de_passe: str
     telephone: Optional[str] = None
-    type:      TypeUtilisateur
-    matricule: str
+    type: TypeUtilisateur
+    role: RoleUtilisateur = RoleUtilisateur.membre
+    matricule: Optional[str] = None
+    piece_identite_type: Optional[str] = None
+    piece_identite_numero: Optional[str] = None
 
 
 class UtilisateurUpdate(BaseModel):
-    """Données pour la modification d'un membre. Tous les champs sont optionnels."""
-    nom:       Optional[str] = None
-    prenom:    Optional[str] = None
-    email:     Optional[str] = None
+    nom: Optional[str] = None
+    prenom: Optional[str] = None
+    email: Optional[str] = None
     telephone: Optional[str] = None
-    type:      Optional[TypeUtilisateur] = None
+    type: Optional[TypeUtilisateur] = None
+    matricule: Optional[str] = None
+    piece_identite_type: Optional[str] = None
+    piece_identite_numero: Optional[str] = None
 
 
 class UtilisateurResponse(BaseModel):
-    """Structure retournée par l'API pour un membre."""
-    id:        int
-    nom:       str
-    prenom:    str
-    email:     str
+    id: int
+    nom: str
+    prenom: str
+    email: str
     telephone: Optional[str]
-    type:      TypeUtilisateur
-    matricule: str
+    type: TypeUtilisateur
+    role: RoleUtilisateur
+    matricule: Optional[str]
+    piece_identite_type: Optional[str]
+    piece_identite_numero: Optional[str]
+    actif: bool
+    created_at: Optional[datetime]
 
     class Config:
         from_attributes = True
+
+
+LoginResponse.model_rebuild()

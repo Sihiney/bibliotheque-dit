@@ -1,17 +1,27 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
+import hashlib
+import hmac
+import json
+import base64
+import time
+import os
+
 import models, schemas
 from database import engine, get_db
-from models import TypeUtilisateur
+from models import TypeUtilisateur, RoleUtilisateur
 
 models.Base.metadata.create_all(bind=engine)
+
+SECRET_KEY = os.getenv("SECRET_KEY", "bibliotheque-dit-secret-key-2026")
+TOKEN_EXPIRY = 86400 * 7  # 7 jours
 
 app = FastAPI(
     title="Microservice Utilisateurs",
     description="API de gestion des membres - Bibliothèque DIT",
-    version="1.0.0"
+    version="2.0.0"
 )
 
 app.add_middleware(
@@ -22,26 +32,129 @@ app.add_middleware(
 )
 
 
+# ── Utilitaires Auth ──
+
+def hash_password(password: str) -> str:
+    return hashlib.sha256((password + SECRET_KEY).encode()).hexdigest()
+
+
+def verify_password(password: str, hashed: str) -> bool:
+    return hash_password(password) == hashed
+
+
+def create_token(user_id: int, role: str) -> str:
+    payload = {
+        "user_id": user_id,
+        "role": role,
+        "exp": int(time.time()) + TOKEN_EXPIRY
+    }
+    payload_b64 = base64.urlsafe_b64encode(json.dumps(payload).encode()).decode()
+    signature = hmac.new(SECRET_KEY.encode(), payload_b64.encode(), hashlib.sha256).hexdigest()
+    return f"{payload_b64}.{signature}"
+
+
+def decode_token(token: str) -> dict:
+    try:
+        parts = token.split(".")
+        if len(parts) != 2:
+            return None
+        payload_b64, signature = parts
+        expected_sig = hmac.new(SECRET_KEY.encode(), payload_b64.encode(), hashlib.sha256).hexdigest()
+        if not hmac.compare_digest(signature, expected_sig):
+            return None
+        payload = json.loads(base64.urlsafe_b64decode(payload_b64))
+        if payload.get("exp", 0) < time.time():
+            return None
+        return payload
+    except Exception:
+        return None
+
+
+def get_current_user(authorization: Optional[str] = Header(None), db: Session = Depends(get_db)):
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Token manquant")
+    token = authorization[7:]
+    payload = decode_token(token)
+    if not payload:
+        raise HTTPException(status_code=401, detail="Token invalide ou expiré")
+    user = db.query(models.Utilisateur).filter(models.Utilisateur.id == payload["user_id"]).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Utilisateur introuvable")
+    return user
+
+
+# ── Endpoints Auth ──
+
+@app.post("/auth/register", response_model=schemas.LoginResponse, status_code=201)
+def register(data: schemas.RegisterRequest, db: Session = Depends(get_db)):
+    """Inscription d'un nouveau membre."""
+    if db.query(models.Utilisateur).filter(models.Utilisateur.email == data.email).first():
+        raise HTTPException(status_code=400, detail="Cet email est déjà utilisé")
+
+    # Validation conditionnelle
+    if data.type == TypeUtilisateur.etudiant:
+        if not data.matricule:
+            raise HTTPException(status_code=400, detail="Le matricule est obligatoire pour les étudiants")
+        if db.query(models.Utilisateur).filter(models.Utilisateur.matricule == data.matricule).first():
+            raise HTTPException(status_code=400, detail="Ce matricule est déjà utilisé")
+    else:
+        if not data.piece_identite_numero:
+            raise HTTPException(status_code=400, detail="Le numéro de pièce d'identité est obligatoire pour les enseignants et le personnel")
+
+    nouveau = models.Utilisateur(
+        nom=data.nom,
+        prenom=data.prenom,
+        email=data.email,
+        mot_de_passe=hash_password(data.mot_de_passe),
+        telephone=data.telephone,
+        type=data.type,
+        role=RoleUtilisateur.membre,
+        matricule=data.matricule,
+        piece_identite_type=data.piece_identite_type,
+        piece_identite_numero=data.piece_identite_numero,
+    )
+    db.add(nouveau)
+    db.commit()
+    db.refresh(nouveau)
+
+    token = create_token(nouveau.id, nouveau.role.value)
+    return schemas.LoginResponse(access_token=token, user=schemas.UtilisateurResponse.model_validate(nouveau))
+
+
+@app.post("/auth/login", response_model=schemas.LoginResponse)
+def login(data: schemas.LoginRequest, db: Session = Depends(get_db)):
+    """Connexion d'un membre existant."""
+    user = db.query(models.Utilisateur).filter(models.Utilisateur.email == data.email).first()
+    if not user or not verify_password(data.mot_de_passe, user.mot_de_passe):
+        raise HTTPException(status_code=401, detail="Email ou mot de passe incorrect")
+    if not user.actif:
+        raise HTTPException(status_code=403, detail="Compte désactivé")
+
+    token = create_token(user.id, user.role.value)
+    return schemas.LoginResponse(access_token=token, user=schemas.UtilisateurResponse.model_validate(user))
+
+
+@app.get("/auth/me", response_model=schemas.UtilisateurResponse)
+def get_me(current_user: models.Utilisateur = Depends(get_current_user)):
+    """Retourne le profil de l'utilisateur connecté."""
+    return current_user
+
+
+# ── Endpoints CRUD (compatibilité) ──
+
 @app.get("/utilisateurs", response_model=List[schemas.UtilisateurResponse])
 def lister_utilisateurs(db: Session = Depends(get_db)):
-    """Retourne la liste de tous les membres."""
-    return db.query(models.Utilisateur).all()
+    return db.query(models.Utilisateur).order_by(models.Utilisateur.id).all()
 
 
 @app.get("/utilisateurs/type/{type_utilisateur}", response_model=List[schemas.UtilisateurResponse])
 def lister_par_type(type_utilisateur: TypeUtilisateur, db: Session = Depends(get_db)):
-    """Retourne les membres filtrés par type : etudiant, professeur ou personnel_administratif."""
-    return db.query(models.Utilisateur).filter(
-        models.Utilisateur.type == type_utilisateur
-    ).all()
+    return db.query(models.Utilisateur).filter(models.Utilisateur.type == type_utilisateur).all()
 
 
 @app.get("/utilisateurs/{utilisateur_id}", response_model=schemas.UtilisateurResponse)
 def obtenir_utilisateur(utilisateur_id: int, db: Session = Depends(get_db)):
-    """Retourne le profil complet d'un membre."""
-    utilisateur = db.query(models.Utilisateur).filter(
-        models.Utilisateur.id == utilisateur_id
-    ).first()
+    utilisateur = db.query(models.Utilisateur).filter(models.Utilisateur.id == utilisateur_id).first()
     if not utilisateur:
         raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
     return utilisateur
@@ -49,13 +162,15 @@ def obtenir_utilisateur(utilisateur_id: int, db: Session = Depends(get_db)):
 
 @app.post("/utilisateurs", response_model=schemas.UtilisateurResponse, status_code=201)
 def creer_utilisateur(utilisateur: schemas.UtilisateurCreate, db: Session = Depends(get_db)):
-    """Inscrit un nouveau membre. L'email et le matricule doivent être uniques."""
     if db.query(models.Utilisateur).filter(models.Utilisateur.email == utilisateur.email).first():
         raise HTTPException(status_code=400, detail="Cet email est déjà utilisé")
-    if db.query(models.Utilisateur).filter(models.Utilisateur.matricule == utilisateur.matricule).first():
-        raise HTTPException(status_code=400, detail="Ce matricule est déjà utilisé")
+    if utilisateur.matricule:
+        if db.query(models.Utilisateur).filter(models.Utilisateur.matricule == utilisateur.matricule).first():
+            raise HTTPException(status_code=400, detail="Ce matricule est déjà utilisé")
 
-    nouveau = models.Utilisateur(**utilisateur.model_dump())
+    data = utilisateur.model_dump()
+    data["mot_de_passe"] = hash_password(data["mot_de_passe"])
+    nouveau = models.Utilisateur(**data)
     db.add(nouveau)
     db.commit()
     db.refresh(nouveau)
@@ -64,16 +179,11 @@ def creer_utilisateur(utilisateur: schemas.UtilisateurCreate, db: Session = Depe
 
 @app.put("/utilisateurs/{utilisateur_id}", response_model=schemas.UtilisateurResponse)
 def modifier_utilisateur(utilisateur_id: int, mise_a_jour: schemas.UtilisateurUpdate, db: Session = Depends(get_db)):
-    """Modifie un membre existant. Seuls les champs fournis sont mis à jour."""
-    utilisateur = db.query(models.Utilisateur).filter(
-        models.Utilisateur.id == utilisateur_id
-    ).first()
+    utilisateur = db.query(models.Utilisateur).filter(models.Utilisateur.id == utilisateur_id).first()
     if not utilisateur:
         raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
-
     for champ, valeur in mise_a_jour.model_dump(exclude_unset=True).items():
         setattr(utilisateur, champ, valeur)
-
     db.commit()
     db.refresh(utilisateur)
     return utilisateur
@@ -81,13 +191,9 @@ def modifier_utilisateur(utilisateur_id: int, mise_a_jour: schemas.UtilisateurUp
 
 @app.delete("/utilisateurs/{utilisateur_id}", status_code=204)
 def supprimer_utilisateur(utilisateur_id: int, db: Session = Depends(get_db)):
-    """Supprime un membre de la bibliothèque."""
-    utilisateur = db.query(models.Utilisateur).filter(
-        models.Utilisateur.id == utilisateur_id
-    ).first()
+    utilisateur = db.query(models.Utilisateur).filter(models.Utilisateur.id == utilisateur_id).first()
     if not utilisateur:
         raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
-
     db.delete(utilisateur)
     db.commit()
     return None
@@ -95,5 +201,4 @@ def supprimer_utilisateur(utilisateur_id: int, db: Session = Depends(get_db)):
 
 @app.get("/health")
 def health_check():
-    """Vérifie que le service est opérationnel."""
     return {"status": "ok", "service": "utilisateurs"}
